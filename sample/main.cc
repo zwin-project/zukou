@@ -3,22 +3,7 @@
 #include <glm/gtx/string_cast.hpp>
 #include <memory>
 
-class Box : public zukou::CuboidWindow {
- public:
-  static std::shared_ptr<Box> Create(
-      std::shared_ptr<zukou::Application> app, glm::vec3 half_size) {
-    return std::shared_ptr<Box>(new Box(app, half_size));
-  }
-
- protected:
-  Box(std::shared_ptr<zukou::Application> app, glm::vec3 half_size)
-      : CuboidWindow(app, half_size) {}
-
-  void RayButton(uint32_t serial, [[maybe_unused]] uint32_t time,
-      [[maybe_unused]] uint32_t button, bool pressed) override {
-    if (pressed) this->Move(serial);
-  }
-};
+#include "box.h"
 
 int main() {
   std::shared_ptr<zukou::Application> app = zukou::Application::Create();

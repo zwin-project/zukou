@@ -3,7 +3,10 @@ deps_zukou_sample = [
 ]
 
 srcs_zukou_sample = [
+  'box.cc',
   'main.cc',
+  zigen_client_protocol_h,
+  zigen_opengl_client_protocol_h,
 ]
 
 executable(

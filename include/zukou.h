@@ -6,26 +6,36 @@
 #include <memory>
 #include <string>
 
+#define DISABLE_MOVE_AND_COPY(Class)        \
+  Class(const Class &) = delete;            \
+  Class(Class &&) = delete;                 \
+  Class &operator=(const Class &) = delete; \
+  Class &operator=(Class &&) = delete;
+
 namespace zukou {
 
 class Application;
+class Buffer;
 class CuboidWindow;
+class OpenGLComponent;
+class OpenGLElementArrayBuffer;
+class OpenGLShaderProgram;
+class OpenGLTexture;
+class OpenGLVertexBuffer;
 class Ray;
 class VirtualObject;
 
 class VirtualObject : public std::enable_shared_from_this<VirtualObject> {
   friend Ray;
+  friend OpenGLComponent;
 
  public:
-  VirtualObject(const VirtualObject &) = delete;
-  VirtualObject(VirtualObject &&) = delete;
-  VirtualObject &operator=(const VirtualObject &) = delete;
-  VirtualObject &operator=(VirtualObject &&) = delete;
+  DISABLE_MOVE_AND_COPY(VirtualObject)
 
   virtual ~VirtualObject();
 
-  virtual void Commit() final;
-  virtual void NextFrame() final;
+  void Commit();
+  void NextFrame();
 
  protected:
   explicit VirtualObject(std::shared_ptr<Application> app);
@@ -48,16 +58,13 @@ class VirtualObject : public std::enable_shared_from_this<VirtualObject> {
 
 class CuboidWindow : public VirtualObject {
  public:
-  CuboidWindow(const CuboidWindow &) = delete;
-  CuboidWindow(CuboidWindow &&) = delete;
-  CuboidWindow &operator=(const CuboidWindow &) = delete;
-  CuboidWindow &operator=(CuboidWindow &&) = delete;
+  DISABLE_MOVE_AND_COPY(CuboidWindow)
 
   explicit CuboidWindow(std::shared_ptr<Application> app, glm::vec3 half_size);
   virtual ~CuboidWindow();
 
-  virtual void Move(uint32_t serial) final;
-  virtual void Rotate(glm::quat quaternion) final;
+  void Move(uint32_t serial);
+  void Rotate(glm::quat quaternion);
 
   inline glm::vec3 half_size() { return half_size_; }
   inline glm::quat quaternion() { return quaternion_; }
@@ -83,17 +90,20 @@ class CuboidWindow : public VirtualObject {
 };
 
 class Application final : public std::enable_shared_from_this<Application> {
+  friend Buffer;
   friend CuboidWindow;
+  friend OpenGLComponent;
+  friend OpenGLElementArrayBuffer;
+  friend OpenGLShaderProgram;
+  friend OpenGLTexture;
+  friend OpenGLVertexBuffer;
   friend VirtualObject;
 
  public:
   static std::shared_ptr<Application> Create();
 
  public:
-  Application(const Application &) = delete;
-  Application(Application &&) = delete;
-  Application &operator=(const Application &) = delete;
-  Application &operator=(Application &&) = delete;
+  DISABLE_MOVE_AND_COPY(Application)
 
   ~Application();
 
@@ -132,6 +142,152 @@ class Application final : public std::enable_shared_from_this<Application> {
 
   // other wayland objects
   std::unique_ptr<Ray> ray_;
+};
+
+class Buffer {
+ public:
+  DISABLE_MOVE_AND_COPY(Buffer)
+
+  virtual ~Buffer();
+
+ protected:
+  Buffer(std::shared_ptr<Application> app, int32_t width, int32_t height);
+  Buffer(std::shared_ptr<Application> app, size_t size);
+
+  struct wl_shm_pool *pool_proxy_;
+  struct wl_buffer *buffer_proxy_;
+  int fd_;
+  size_t size_;
+  void *data_;
+};
+
+struct ColorBGRA {
+  uint8_t b, g, r, a;
+};
+
+class OpenGLTexture : public Buffer {
+  friend OpenGLComponent;
+
+ public:
+  static std::shared_ptr<OpenGLTexture> Create(
+      std::shared_ptr<Application> app, uint32_t width, uint32_t height);
+
+ public:
+  DISABLE_MOVE_AND_COPY(OpenGLTexture)
+
+  ~OpenGLTexture();
+
+  void ReattachBuffer();
+  ColorBGRA *GetData();
+
+ private:
+  OpenGLTexture(
+      std::shared_ptr<Application> app, uint32_t width, uint32_t height);
+
+ private:
+  struct zgn_opengl_texture *proxy_;
+};
+
+class OpenGLVertexBuffer : public Buffer {
+  friend OpenGLComponent;
+
+ public:
+  static std::shared_ptr<OpenGLVertexBuffer> Create(
+      std::shared_ptr<Application> app, size_t vertex_count);
+
+ public:
+  DISABLE_MOVE_AND_COPY(OpenGLVertexBuffer)
+
+  ~OpenGLVertexBuffer();
+
+  void ReattachBuffer();
+
+  template <typename T>
+  T *GetData() {
+    return reinterpret_cast<T *>(data_);
+  }
+
+ private:
+  OpenGLVertexBuffer(std::shared_ptr<Application> app, size_t size);
+
+ private:
+  struct zgn_opengl_vertex_buffer *proxy_;
+};
+
+class OpenGLElementArrayBuffer : public Buffer {
+  friend OpenGLComponent;
+
+ public:
+  static std::shared_ptr<OpenGLElementArrayBuffer> Create(
+      std::shared_ptr<Application> app, size_t size, uint32_t type);
+
+ public:
+  DISABLE_MOVE_AND_COPY(OpenGLElementArrayBuffer)
+
+  ~OpenGLElementArrayBuffer();
+
+  void ReattachBuffer();
+
+  template <typename T>
+  T *GetData() {
+    return reinterpret_cast<T *>(data_);
+  }
+
+ private:
+  OpenGLElementArrayBuffer(
+      std::shared_ptr<Application> app, size_t size, uint32_t type);
+  uint32_t type_;
+
+ private:
+  struct zgn_opengl_element_array_buffer *proxy_;
+};
+
+class OpenGLShaderProgram {
+  friend OpenGLComponent;
+
+ public:
+  static std::shared_ptr<OpenGLShaderProgram> Create(
+      std::shared_ptr<Application> app);
+
+ public:
+  DISABLE_MOVE_AND_COPY(OpenGLShaderProgram)
+
+  ~OpenGLShaderProgram();
+
+  void SetUniformVariable(const char *location, glm::mat4 mat);
+  void SetUniformVariable(const char *location, glm::vec4 vec);
+  void SetUniformVariable(const char *location, glm::vec3 vec);
+  bool SetVertexShader(std::string source);
+  bool SetFragmentShader(std::string source);
+  void Link();
+
+ private:
+  OpenGLShaderProgram(std::shared_ptr<Application> app);
+
+ private:
+  struct zgn_opengl_shader_program *proxy_;
+};
+
+class OpenGLComponent {
+ public:
+  DISABLE_MOVE_AND_COPY(OpenGLComponent)
+
+  OpenGLComponent(std::shared_ptr<Application> app,
+      std::shared_ptr<VirtualObject> virtual_object);
+  ~OpenGLComponent();
+
+  void Attach(std::shared_ptr<OpenGLVertexBuffer> vertex_buffer);
+  void Attach(std::shared_ptr<OpenGLElementArrayBuffer> element_array_buffer);
+  void Attach(std::shared_ptr<OpenGLShaderProgram> shader_program);
+  void Attach(std::shared_ptr<OpenGLTexture> texture);
+  void SetMin(uint32_t min);
+  void SetCount(uint32_t count);
+  void SetTopology(uint32_t topology);
+  void AddVertexAttribute(uint32_t index, uint32_t size, uint16_t type,
+      uint32_t normalized, uint32_t stride, uint32_t pointer);
+
+ private:
+  struct zgn_opengl_component *proxy_;
 };
 
 class ZukouException : public std::exception {
