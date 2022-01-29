@@ -193,7 +193,7 @@ class OpenGLVertexBuffer : public Buffer {
 
  public:
   static std::shared_ptr<OpenGLVertexBuffer> Create(
-      std::shared_ptr<Application> app, size_t vertex_count);
+      std::shared_ptr<Application> app, size_t size);
 
  public:
   DISABLE_MOVE_AND_COPY(OpenGLVertexBuffer)

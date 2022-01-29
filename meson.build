@@ -16,6 +16,10 @@ dep_glm = dependency('glm')
 
 pkgconfig = import('pkgconfig')
 
+prog_python = import('python').find_installation('python3')
+files_textify_py = files('tools/textify.py')
+cmd_textify = [ prog_python, files_textify_py, '@INPUT@', '@OUTPUT@']
+
 subdir('include')
 subdir('protocol')
 subdir('zukou')
