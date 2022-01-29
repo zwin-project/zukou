@@ -1,7 +1,6 @@
 #include <zukou.h>
 
 #include <glm/gtx/string_cast.hpp>
-#include <iostream>
 #include <memory>
 
 class Box : public zukou::CuboidWindow {

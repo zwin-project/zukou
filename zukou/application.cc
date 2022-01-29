@@ -5,7 +5,6 @@
 #include <zukou.h>
 
 #include <cstring>
-#include <iostream>
 
 #include "ray.h"
 
