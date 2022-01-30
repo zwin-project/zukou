@@ -1,5 +1,5 @@
 #include <zigen-shell-client-protocol.h>
-#include <zukou.h>
+#include <zukou/zukou.h>
 
 #include <glm/glm.hpp>
 

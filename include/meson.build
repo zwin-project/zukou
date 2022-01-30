@@ -1,1 +1,5 @@
-install_headers('zukou.h')
+headers = [
+  'zukou/zukou.h',
+]
+
+install_headers(headers, subdir : 'zukou')

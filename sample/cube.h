@@ -1,7 +1,7 @@
 #ifndef ZUKOU_SAMPLE_CUBE_H
 #define ZUKOU_SAMPLE_CUBE_H
 
-#include <zukou.h>
+#include <zukou/zukou.h>
 
 class Cube {
  public:

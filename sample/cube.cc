@@ -1,7 +1,7 @@
 #include "cube.h"
 
 #include <zigen-opengl-client-protocol.h>
-#include <zukou.h>
+#include <zukou/zukou.h>
 
 #include <cstring>
 #include <glm/gtx/quaternion.hpp>

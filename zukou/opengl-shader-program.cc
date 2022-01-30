@@ -1,6 +1,6 @@
 #include <glm-helper.h>
 #include <zigen-opengl-client-protocol.h>
-#include <zukou.h>
+#include <zukou/zukou.h>
 
 #include "os-helper.h"
 

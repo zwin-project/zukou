@@ -1,5 +1,5 @@
 #include <zigen-opengl-client-protocol.h>
-#include <zukou.h>
+#include <zukou/zukou.h>
 
 namespace zukou {
 

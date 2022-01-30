@@ -1,7 +1,7 @@
 #include <sys/mman.h>
 #include <unistd.h>
 #include <wayland-client.h>
-#include <zukou.h>
+#include <zukou/zukou.h>
 
 #include "os-helper.h"
 

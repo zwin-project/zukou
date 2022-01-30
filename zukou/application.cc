@@ -2,7 +2,7 @@
 #include <zigen-client-protocol.h>
 #include <zigen-opengl-client-protocol.h>
 #include <zigen-shell-client-protocol.h>
-#include <zukou.h>
+#include <zukou/zukou.h>
 
 #include <cstring>
 
