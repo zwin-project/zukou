@@ -3,10 +3,11 @@
 uniform mat4 zMVP;
 uniform mat4 transform;
 layout(location = 0) in vec4 position;
-layout(location = 1) in vec2 v2UVcoordsIn;
-out vec2 v2UVcoords;
+layout(location = 1) in vec3 normal;
+layout(location = 2) in vec2 uv;
+out vec2 uvOut;
 
 void main() {
-  v2UVcoords = v2UVcoordsIn;
+  uvOut = uv;
   gl_Position = zMVP * transform * position;
 }

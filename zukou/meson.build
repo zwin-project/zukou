@@ -1,6 +1,9 @@
+subdir('primitives')
+
 deps_zukou = [
   dep_glm,
   dep_wayland_client,
+  dep_zukou_primitives,
 ]
 
 srcs_zukou = [
