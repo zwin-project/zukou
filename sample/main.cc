@@ -1,11 +1,10 @@
+#include <linux/input.h>
 #include <zukou/zukou.h>
 
 #include <glm/gtx/string_cast.hpp>
 #include <memory>
 
-const glm::vec4 cyan(0.0f, 1.0f, 1.0f, 1.0f);
-const glm::vec4 magenta(1.0f, 0.0f, 1.0f, 1.0f);
-const glm::vec4 yellow(1.0f, 1.0f, 0.0f, 1.0f);
+#include "cube.h"
 
 class WindowA : public zukou::CuboidWindow {
  public:
@@ -16,18 +15,38 @@ class WindowA : public zukou::CuboidWindow {
 
   void Init() {
     auto self = shared_from_this();
-    cube1_.reset(new zukou::primitives::FrameCuboid(app_, self));
+    object_group_.reset(new zukou::objects::ObjectGroup());
+    cube1_.reset(new Cube(app_, self));
+    cube2_.reset(new Cube(app_, self));
     cube1_->Init();
+    cube2_->Init();
+    object_group_->AddObject(cube1_);
+    object_group_->AddObject(cube2_);
   }
 
  private:
   WindowA(std::shared_ptr<zukou::Application> app, glm::vec3 half_size)
       : CuboidWindow(app, half_size) {}
 
+  virtual bool Frame() override { return object_group_->Draw(); };
+
   void RayButton([[maybe_unused]] uint32_t serial,
       [[maybe_unused]] uint32_t time, [[maybe_unused]] uint32_t button,
       bool pressed) override {
-    if (pressed) this->Move(serial);
+    if (pressed && button == BTN_LEFT) {
+      this->Move(serial);
+    } else {
+      object_group_->RayButton(serial, time, button, pressed);
+    }
+  }
+
+  virtual void RayMotion(
+      uint32_t time, glm::vec3 origin, glm::vec3 direction) override {
+    object_group_->RayMotion(origin, direction, time);
+  }
+
+  void RayLeave([[maybe_unused]] uint32_t serial) override {
+    object_group_->RayLeave();
   }
 
   void Configured([[maybe_unused]] uint32_t serial) override {
@@ -38,11 +57,16 @@ class WindowA : public zukou::CuboidWindow {
     cube1_->set_position(glm::vec3(0, 0.05f, 0.0f));
     cube1_->set_half_size(glm::vec3(min_half / 1.8f));
     cube1_->set_quaternion(glm::quat(glm::vec3(M_PI / 6, M_PI / 9, 0)));
-    cube1_->Draw();
-    this->Commit();
+    cube2_->set_position(glm::vec3(0, -0.08f, 0.0f));
+    cube2_->set_half_size(
+        glm::vec3(min_half / 2.1f, min_half / 4, min_half / 3.3));
+    cube2_->set_quaternion(glm::quat(glm::vec3(-M_PI / 6, -M_PI / 9, 0)));
+    this->ScheduleNextFrame();
   }
 
-  std::unique_ptr<zukou::primitives::FrameCuboid> cube1_;
+  std::unique_ptr<zukou::objects::ObjectGroup> object_group_;
+  std::shared_ptr<Cube> cube1_;
+  std::shared_ptr<Cube> cube2_;
 };
 
 class WindowB : public zukou::CuboidWindow {
@@ -70,6 +94,13 @@ class WindowB : public zukou::CuboidWindow {
     if (pressed) this->Move(serial);
   }
 
+  virtual bool Frame() override {
+    bool should_commit = false;
+    if (cube1_->Draw()) should_commit = true;
+    if (cube2_->Draw()) should_commit = true;
+    return should_commit;
+  };
+
   void Configured([[maybe_unused]] uint32_t serial) override {
     float min_half =
         half_size().x > half_size().y
@@ -85,17 +116,14 @@ class WindowB : public zukou::CuboidWindow {
         glm::vec3(min_half / 2.2f, min_half / 3.2, min_half / 3.2));
     cube2_->set_quaternion(glm::quat(glm::vec3(0, -M_PI / 8, M_PI / 10)));
     cube2_->set_frame_color(cyan);
-    cube1_->Draw();
-    cube2_->Draw();
-    this->Commit();
+    this->ScheduleNextFrame();
   }
 
   void RayEnter([[maybe_unused]] uint32_t serial,
       [[maybe_unused]] glm::vec3 origin,
       [[maybe_unused]] glm::vec3 direction) override {
     cube2_->set_frame_color(magenta);
-    cube2_->Draw();
-    this->Commit();
+    this->ScheduleNextFrame();
   }
 
   virtual void RayMotion([[maybe_unused]] uint32_t time, glm::vec3 origin,
@@ -105,13 +133,12 @@ class WindowB : public zukou::CuboidWindow {
     else
       cube2_->set_frame_color(magenta);
 
-    if (cube2_->Draw()) this->Commit();
+    this->ScheduleNextFrame();
   }
 
   void RayLeave([[maybe_unused]] uint32_t serial) override {
     cube2_->set_frame_color(cyan);
-    cube2_->Draw();
-    this->Commit();
+    this->ScheduleNextFrame();
   }
 
   std::unique_ptr<zukou::primitives::FrameCuboid> cube1_;

@@ -1,11 +1,13 @@
 subdir('primitives')
 subdir('entities')
+subdir('objects')
 
 deps_zukou = [
   dep_glm,
   dep_wayland_client,
-  dep_zukou_primitives,
   dep_zukou_entities,
+  dep_zukou_objects,
+  dep_zukou_primitives,
 ]
 
 srcs_zukou = [

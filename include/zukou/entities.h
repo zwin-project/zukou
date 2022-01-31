@@ -1,5 +1,5 @@
-#ifndef ZUKOU_OBJECTS_H
-#define ZUKOU_OBJECTS_H
+#ifndef ZUKOU_ENTITIES_H
+#define ZUKOU_ENTITIES_H
 
 #include <zukou/zukou.h>
 
@@ -62,4 +62,4 @@ float ray_obb(glm::vec3 origin, glm::vec3 direction, glm::vec3 aabb_half_size,
 }  // namespace entities
 }  // namespace zukou
 
-#endif  //  ZUKOU_OBJECTS_H
+#endif  //  ZUKOU_ENTITIES_H

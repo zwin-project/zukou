@@ -53,6 +53,8 @@ void Application::Connect(std::string socket) {
     throw ZukouException("unsupported zigen server");
 }
 
+void Application::Flush() { wl_display_flush(display_); }
+
 bool Application::Run() {
   int ret;
   running_ = true;

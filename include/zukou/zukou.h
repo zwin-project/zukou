@@ -25,6 +25,12 @@ class OpenGLVertexBuffer;
 class Ray;
 class VirtualObject;
 
+enum VirtualObjectFrameState {
+  kRepaintScheduled,
+  kWaitingNextFrame,
+  kWaitingContentUpdate,
+};
+
 class VirtualObject : public std::enable_shared_from_this<VirtualObject> {
   friend Ray;
   friend OpenGLComponent;
@@ -34,12 +40,11 @@ class VirtualObject : public std::enable_shared_from_this<VirtualObject> {
 
   virtual ~VirtualObject();
 
-  void Commit();
-  void NextFrame();
+  void ScheduleNextFrame();
 
  protected:
   explicit VirtualObject(std::shared_ptr<Application> app);
-  virtual void Frame(uint32_t time);
+  virtual bool Frame(); /* return true to commit */
   virtual void RayEnter(uint32_t serial, glm::vec3 origin, glm::vec3 direction);
   virtual void RayLeave(uint32_t serial);
   virtual void RayMotion(uint32_t time, glm::vec3 origin, glm::vec3 direction);
@@ -54,6 +59,12 @@ class VirtualObject : public std::enable_shared_from_this<VirtualObject> {
   static const struct wl_callback_listener frame_callback_listener_;
   static void FrameCallbackDone(
       void *data, struct wl_callback *callback, uint32_t time);
+
+ private:
+  void Commit();
+
+ private:
+  enum VirtualObjectFrameState frame_state_;
 };
 
 class CuboidWindow : public VirtualObject {
@@ -108,6 +119,7 @@ class Application final : public std::enable_shared_from_this<Application> {
   ~Application();
 
   void Connect(std::string socket);
+  void Flush();
   bool Run();
   void Terminate();
 
@@ -302,6 +314,7 @@ class ZukouException : public std::exception {
 }  // namespace zukou
 
 #include "entities.h"
+#include "objects.h"
 #include "primitives.h"
 
 #endif  //  ZUKOU_H
