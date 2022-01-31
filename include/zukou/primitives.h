@@ -22,12 +22,12 @@ class FrameCuboid : public IPrimitive {
   virtual bool Draw() override;
 
   inline glm::vec3 position() { return position_; }
-  inline glm::vec3 size() { return size_; };
+  inline glm::vec3 half_size() { return half_size_; };
   inline glm::quat quaternion() { return quaternion_; }
   inline glm::vec4 frame_color() { return frame_color_; }
 
   void set_position(glm::vec3 position);
-  void set_size(glm::vec3 size);
+  void set_half_size(glm::vec3 half_size);
   void set_quaternion(glm::quat quaternion);
   void set_frame_color(glm::vec4 color);
 
@@ -36,7 +36,7 @@ class FrameCuboid : public IPrimitive {
   std::shared_ptr<zukou::VirtualObject> virtual_object_;
 
   bool needs_redraw_;
-  glm::vec3 size_;
+  glm::vec3 half_size_;
   glm::vec3 position_;
   glm::quat quaternion_;
   glm::vec4 frame_color_;

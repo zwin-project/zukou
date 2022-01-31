@@ -80,8 +80,8 @@ bool FrameCuboid::Draw() {
   if (!needs_redraw_) return false;
   glm::mat4 transform(1);
   transform = glm::translate(transform, position_);
-  transform = glm::scale(transform, glm::vec3(size_));
   transform = transform * glm::toMat4(quaternion_);
+  transform = glm::scale(transform, glm::vec3(half_size_));
   shader_->SetUniformVariable("transform", transform);
   shader_->SetUniformVariable("color", frame_color_);
   component_->Attach(shader_);
@@ -90,21 +90,25 @@ bool FrameCuboid::Draw() {
 }
 
 void FrameCuboid::set_position(glm::vec3 position) {
+  if (position_ == position) return;
   position_ = position;
   needs_redraw_ = true;
 }
 
-void FrameCuboid::set_size(glm::vec3 size) {
-  size_ = size;
+void FrameCuboid::set_half_size(glm::vec3 half_size) {
+  if (half_size_ == half_size) return;
+  half_size_ = half_size;
   needs_redraw_ = true;
 }
 
 void FrameCuboid::set_quaternion(glm::quat quaternion) {
+  if (quaternion_ == quaternion) return;
   quaternion_ = quaternion;
   needs_redraw_ = true;
 }
 
 void FrameCuboid::set_frame_color(glm::vec4 color) {
+  if (frame_color_ == color) return;
   frame_color_ = color;
   needs_redraw_ = true;
 }

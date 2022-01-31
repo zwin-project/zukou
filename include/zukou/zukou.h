@@ -301,6 +301,7 @@ class ZukouException : public std::exception {
 
 }  // namespace zukou
 
+#include "entities.h"
 #include "primitives.h"
 
 #endif  //  ZUKOU_H
