@@ -1,3 +1,4 @@
+#include <fcntl.h>
 #include <wayland-client.h>
 #include <zigen-client-protocol.h>
 #include <zigen-opengl-client-protocol.h>
@@ -5,6 +6,7 @@
 #include <zukou/zukou.h>
 
 #include <cstring>
+#include <iostream>
 
 #include "ray.h"
 
@@ -15,8 +17,32 @@ std::shared_ptr<Application> Application::Create() {
   return app;
 }
 
+class ApplicationEpollEvent : public PollEvent {
+ public:
+  ApplicationEpollEvent(std::shared_ptr<Application> app) : app_(app) {
+    op_ = EPOLL_CTL_ADD;
+
+    fd_ = fcntl(app->GetFd(), F_DUPFD_CLOEXEC, 0);
+    if (fd_ < 0) throw ZukouException("failed to duplicate file descriptor");
+
+    epoll_event_.events = EPOLLIN;
+    epoll_event_.data.ptr = this;
+  }
+
+  virtual bool Done([[maybe_unused]] struct epoll_event *ev) override {
+    app_->Poll();
+    return false;
+  }
+
+  ~ApplicationEpollEvent() { close(fd_); }
+
+ private:
+  std::shared_ptr<Application> app_;
+};
+
 Application::Application()
     : running_(false),
+      exit_status_(0),
       display_(nullptr),
       registry_(nullptr),
       compositor_(nullptr),
@@ -36,6 +62,7 @@ Application::~Application() {
 }
 
 void Application::Connect(std::string socket) {
+  auto self = shared_from_this();
   display_ = wl_display_connect(socket.c_str());
   if (display_ == nullptr)
     throw ZukouException("failed to connect to zigen server");
@@ -51,28 +78,62 @@ void Application::Connect(std::string socket) {
   if (compositor_ == nullptr || seat_ == nullptr || shm_ == nullptr ||
       opengl_ == nullptr || shell_ == nullptr)
     throw ZukouException("unsupported zigen server");
+
+  epoll_fd_ = epoll_create1(EPOLL_CLOEXEC);
+  if (epoll_fd_ == -1) throw ZukouException("epoll_create1 failed");
+
+  poll_event_.reset(new ApplicationEpollEvent(self));
+  AddPollEvent(poll_event_);
 }
 
 void Application::Flush() { wl_display_flush(display_); }
 
-bool Application::Run() {
-  int ret;
-  running_ = true;
-  while (running_) {
-    while (wl_display_prepare_read(display_) != 0) {
-      if (errno != EAGAIN) return false;
-      wl_display_dispatch_pending(display_);
+void Application::Poll() {
+  while (wl_display_prepare_read(display_) != 0) {
+    if (errno != EAGAIN) {
+      this->Terminate(EXIT_FAILURE);
+      return;
     }
-
-    ret = wl_display_flush(display_);
-    if (ret == -1) return false;
-    wl_display_read_events(display_);
     wl_display_dispatch_pending(display_);
   }
-  return true;
+
+  if (wl_display_flush(display_) == -1) {
+    this->Terminate(EXIT_FAILURE);
+    return;
+  }
+  wl_display_read_events(display_);
+  wl_display_dispatch_pending(display_);
 }
 
-void Application::Terminate() { running_ = false; }
+void Application::AddPollEvent(std::shared_ptr<PollEvent> ev) {
+  if (epoll_ctl(epoll_fd_, ev->op(), ev->fd(), ev->epoll_event()) == -1)
+    throw ZukouException("failed to add epoll event");
+}
+
+bool Application::Run() {
+  int epoll_count;
+  struct epoll_event events[16];
+  PollEvent *ev;
+
+  wl_display_flush(display_);
+
+  running_ = true;
+  while (running_) {
+    epoll_count = epoll_wait(epoll_fd_, events, 16, -1);
+    for (int i = 0; i < epoll_count; i++) {
+      ev = reinterpret_cast<PollEvent *>(events[i].data.ptr);
+      if (ev->Done(&events[i])) delete ev;
+    }
+  }
+  return exit_status_;
+}
+
+void Application::Terminate(int exit_status) {
+  exit_status_ = exit_status;
+  running_ = false;
+}
+
+int Application::GetFd() { return wl_display_get_fd(display_); }
 
 const struct wl_registry_listener Application::registry_listener_ = {
     Application::GlobalRegistry,

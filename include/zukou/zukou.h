@@ -1,6 +1,9 @@
 #ifndef ZUKOU_H
 #define ZUKOU_H
 
+#include <sys/epoll.h>
+#include <unistd.h>
+
 #include <glm/glm.hpp>
 #include <glm/gtc/quaternion.hpp>
 #include <memory>
@@ -100,6 +103,21 @@ class CuboidWindow : public VirtualObject {
   glm::quat quaternion_;
 };
 
+class PollEvent {
+ public:
+  inline int op() { return op_; }
+  inline int fd() { return fd_; }
+  inline struct epoll_event *epoll_event() { return &epoll_event_; }
+  virtual bool Done(
+      struct epoll_event *ev) = 0;      // return true to delete this object
+  virtual ~PollEvent() { close(fd_); }  // must close fd_ in the destructor
+
+ protected:
+  int op_;
+  int fd_;
+  struct epoll_event epoll_event_;  // epoll_event.data.ptr must be this
+};
+
 class Application final : public std::enable_shared_from_this<Application> {
   friend Buffer;
   friend CuboidWindow;
@@ -120,8 +138,11 @@ class Application final : public std::enable_shared_from_this<Application> {
 
   void Connect(std::string socket);
   void Flush();
+  void Poll();
+  void AddPollEvent(std::shared_ptr<PollEvent> ev);
   bool Run();
-  void Terminate();
+  void Terminate(int exit_status);
+  int GetFd();
 
  private:
   static const struct wl_registry_listener registry_listener_;
@@ -142,6 +163,7 @@ class Application final : public std::enable_shared_from_this<Application> {
 
  private:
   bool running_;
+  int exit_status_;
 
   // global objects
   struct wl_display *display_;
@@ -154,6 +176,9 @@ class Application final : public std::enable_shared_from_this<Application> {
 
   // other wayland objects
   std::unique_ptr<Ray> ray_;
+
+  std::shared_ptr<PollEvent> poll_event_;
+  int epoll_fd_;
 };
 
 class Buffer {

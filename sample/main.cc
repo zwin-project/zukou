@@ -1,7 +1,10 @@
 #include <linux/input.h>
+#include <signal.h>
+#include <sys/signalfd.h>
 #include <zukou/zukou.h>
 
 #include <glm/gtx/string_cast.hpp>
+#include <iostream>
 #include <memory>
 
 #include "cube.h"
@@ -145,10 +148,38 @@ class WindowB : public zukou::CuboidWindow {
   std::unique_ptr<zukou::entities::FrameCuboid> cube2_;
 };
 
+class SignalEvent : public zukou::PollEvent {
+ public:
+  SignalEvent(std::weak_ptr<zukou::Application> app) : app_(app) {
+    sigset_t mask;
+    sigemptyset(&mask);
+    sigaddset(&mask, SIGINT);
+    sigaddset(&mask, SIGQUIT);
+    sigaddset(&mask, SIGTERM);
+    sigprocmask(SIG_BLOCK, &mask, NULL);
+
+    fd_ = signalfd(-1, &mask, 0);
+    op_ = EPOLL_CTL_ADD;
+    epoll_event_.events = EPOLLIN;
+    epoll_event_.data.ptr = this;
+  }
+
+  virtual bool Done([[maybe_unused]] struct epoll_event *ev) override final {
+    auto app = app_.lock();
+    app->Terminate(EXIT_SUCCESS);
+    return true;
+  }
+
+  ~SignalEvent() { close(fd_); }
+
+  std::weak_ptr<zukou::Application> app_;
+};
+
 int main() {
   std::shared_ptr<zukou::Application> app = zukou::Application::Create();
   std::shared_ptr<WindowA> window_a;
   std::shared_ptr<WindowB> window_b;
+  std::shared_ptr<SignalEvent> sig_event(new SignalEvent(app));
 
   app->Connect("zigen-0");
 
@@ -158,7 +189,11 @@ int main() {
   window_a->Init();
   window_b->Init();
 
-  app->Run();
+  app->AddPollEvent(sig_event);
 
-  return 0;
+  int ret = app->Run();
+
+  std::cout << "exit (" << ret << ")" << std::endl;
+
+  return ret;
 }
