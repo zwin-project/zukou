@@ -103,6 +103,11 @@ void Application::Poll() {
   }
   wl_display_read_events(display_);
   wl_display_dispatch_pending(display_);
+
+  if (wl_display_flush(display_) == -1) {
+    this->Terminate(EXIT_FAILURE);
+    return;
+  }
 }
 
 void Application::AddPollEvent(std::shared_ptr<PollEvent> ev) {
