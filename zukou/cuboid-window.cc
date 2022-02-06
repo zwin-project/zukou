@@ -1,5 +1,5 @@
 #include <zigen-shell-client-protocol.h>
-#include <zukou.h>
+#include <zukou/zukou.h>
 
 #include <glm/glm.hpp>
 
@@ -17,8 +17,8 @@ CuboidWindow::CuboidWindow(
   wl_array_init(&wl_half_size);
   wl_array_init(&wl_quaternion);
 
-  glm_helper::vec3_to_wl_array(half_size, &wl_half_size);
-  glm_helper::quat_to_wl_array(quaternion, &wl_quaternion);
+  glm_helper::to_wl_array(half_size, &wl_half_size);
+  glm_helper::to_wl_array(quaternion, &wl_quaternion);
 
   proxy_ = zgn_shell_get_cuboid_window(
       app->shell_, this->virtual_object_proxy_, &wl_half_size, &wl_quaternion);
@@ -49,7 +49,7 @@ void CuboidWindow::Rotate(glm::quat quaternion) {
   struct wl_array wl_quaternion;
   wl_array_init(&wl_quaternion);
 
-  glm_helper::quat_to_wl_array(quaternion, &wl_quaternion);
+  glm_helper::to_wl_array(quaternion, &wl_quaternion);
   zgn_cuboid_window_rotate(proxy_, &wl_quaternion);
 
   wl_array_release(&wl_quaternion);

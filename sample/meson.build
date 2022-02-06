@@ -4,6 +4,9 @@ deps_zukou_sample = [
 
 srcs_zukou_sample = [
   'main.cc',
+  'cube.cc',
+  zigen_client_protocol_h,
+  zigen_opengl_client_protocol_h,
 ]
 
 executable(

@@ -2,7 +2,7 @@
 #define ZUKOU_RAY_H
 
 #include <zigen-client-protocol.h>
-#include <zukou.h>
+#include <zukou/zukou.h>
 
 #include <memory>
 

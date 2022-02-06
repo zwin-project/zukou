@@ -1,7 +1,7 @@
 #include "ray.h"
 
 #include <zigen-client-protocol.h>
-#include <zukou.h>
+#include <zukou/zukou.h>
 
 #include <memory>
 
