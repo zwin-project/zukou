@@ -26,7 +26,6 @@ class ApplicationEpollEvent : public PollEvent {
     if (fd_ < 0) throw ZukouException("failed to duplicate file descriptor");
 
     epoll_event_.events = EPOLLIN;
-    epoll_event_.data.ptr = this;
   }
 
   virtual bool Done([[maybe_unused]] struct epoll_event *ev) override {
@@ -111,6 +110,7 @@ void Application::Poll() {
 }
 
 void Application::AddPollEvent(std::shared_ptr<PollEvent> ev) {
+  ev->epoll_event_.data.ptr = new Application::PollEventContainer(ev);
   if (epoll_ctl(epoll_fd_, ev->op(), ev->fd(), ev->epoll_event()) == -1)
     throw ZukouException("failed to add epoll event");
 }
@@ -118,7 +118,7 @@ void Application::AddPollEvent(std::shared_ptr<PollEvent> ev) {
 bool Application::Run() {
   int epoll_count;
   struct epoll_event events[16];
-  PollEvent *ev;
+  Application::PollEventContainer *ev;
 
   wl_display_flush(display_);
 
@@ -126,8 +126,9 @@ bool Application::Run() {
   while (running_) {
     epoll_count = epoll_wait(epoll_fd_, events, 16, -1);
     for (int i = 0; i < epoll_count; i++) {
-      ev = reinterpret_cast<PollEvent *>(events[i].data.ptr);
-      if (ev->Done(&events[i])) delete ev;
+      ev = reinterpret_cast<Application::PollEventContainer *>(
+          events[i].data.ptr);
+      if (ev->data()->Done(&events[i])) delete ev;
     }
   }
   return exit_status_;
@@ -194,6 +195,11 @@ void Application::SeatCapabilities(
   if (capability & ZGN_SEAT_CAPABILITY_RAY && app->ray_ == nullptr) {
     app->ray_.reset(new Ray(seat));
   }
+}
+
+Application::PollEventContainer::PollEventContainer(
+    std::shared_ptr<PollEvent> poll_event) {
+  data_ = poll_event;
 }
 
 }  // namespace zukou

@@ -161,7 +161,6 @@ class SignalEvent : public zukou::PollEvent {
     fd_ = signalfd(-1, &mask, 0);
     op_ = EPOLL_CTL_ADD;
     epoll_event_.events = EPOLLIN;
-    epoll_event_.data.ptr = this;
   }
 
   virtual bool Done([[maybe_unused]] struct epoll_event *ev) override final {

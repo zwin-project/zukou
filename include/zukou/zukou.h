@@ -104,6 +104,8 @@ class CuboidWindow : public VirtualObject {
 };
 
 class PollEvent {
+  friend Application;
+
  public:
   inline int op() { return op_; }
   inline int fd() { return fd_; }
@@ -115,7 +117,7 @@ class PollEvent {
  protected:
   int op_;
   int fd_;
-  struct epoll_event epoll_event_;  // epoll_event.data.ptr must be this
+  struct epoll_event epoll_event_;  // epoll_event.data.ptr must not be set
 };
 
 class Application final : public std::enable_shared_from_this<Application> {
@@ -127,6 +129,16 @@ class Application final : public std::enable_shared_from_this<Application> {
   friend OpenGLTexture;
   friend OpenGLVertexBuffer;
   friend VirtualObject;
+
+  class PollEventContainer {
+   public:
+    DISABLE_MOVE_AND_COPY(PollEventContainer)
+    PollEventContainer(std::shared_ptr<PollEvent> poll_event);
+    inline std::shared_ptr<PollEvent> data() { return data_; }
+
+   private:
+    std::shared_ptr<PollEvent> data_;
+  };
 
  public:
   static std::shared_ptr<Application> Create();
