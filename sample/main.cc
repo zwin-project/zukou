@@ -52,6 +52,21 @@ class WindowA : public zukou::CuboidWindow {
     object_group_->RayLeave();
   }
 
+  virtual void DataDeviceEnter(uint32_t serial,
+      [[maybe_unused]] glm::vec3 origin, [[maybe_unused]] glm::vec3 direction,
+      std::weak_ptr<zukou::DataOffer> data_offer) override {
+    object_group_->DataDeviceEnter(serial, data_offer);
+  }
+
+  virtual void DataDeviceLeave() override { object_group_->DataDeviceLeave(); }
+
+  virtual void DataDeviceMotion(
+      uint32_t time, glm::vec3 origin, glm::vec3 direction) override {
+    object_group_->DataDeviceMotion(time, origin, direction);
+  }
+
+  virtual void DataDeviceDrop() override { object_group_->DataDeviceDrop(); }
+
   void Configured([[maybe_unused]] uint32_t serial) override {
     float min_half =
         half_size().x > half_size().y

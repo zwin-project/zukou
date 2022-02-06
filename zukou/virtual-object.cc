@@ -84,6 +84,17 @@ void VirtualObject::RayButton([[maybe_unused]] uint32_t serial,
     [[maybe_unused]] uint32_t time, [[maybe_unused]] uint32_t button,
     [[maybe_unused]] bool pressed) {}
 
+void VirtualObject::DataDeviceEnter([[maybe_unused]] uint32_t serial,
+    [[maybe_unused]] glm::vec3 origin, [[maybe_unused]] glm::vec3 direction,
+    [[maybe_unused]] std::weak_ptr<DataOffer> data_offer) {}
+
+void VirtualObject::DataDeviceLeave() {}
+
+void VirtualObject::DataDeviceMotion([[maybe_unused]] uint32_t time,
+    [[maybe_unused]] glm::vec3 origin, [[maybe_unused]] glm::vec3 direction) {}
+
+void VirtualObject::DataDeviceDrop() {}
+
 bool VirtualObject::Frame() { return true; }
 
 const struct wl_callback_listener VirtualObject::frame_callback_listener_ = {

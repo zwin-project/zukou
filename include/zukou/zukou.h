@@ -4,10 +4,12 @@
 #include <sys/epoll.h>
 #include <unistd.h>
 
+#include <functional>
 #include <glm/glm.hpp>
 #include <glm/gtc/quaternion.hpp>
 #include <memory>
 #include <string>
+#include <vector>
 
 #define DISABLE_MOVE_AND_COPY(Class)        \
   Class(const Class &) = delete;            \
@@ -26,6 +28,8 @@ class OpenGLShaderProgram;
 class OpenGLTexture;
 class OpenGLVertexBuffer;
 class Ray;
+class DataDevice;
+class DataOffer;
 class VirtualObject;
 
 enum VirtualObjectFrameState {
@@ -36,6 +40,7 @@ enum VirtualObjectFrameState {
 
 class VirtualObject : public std::enable_shared_from_this<VirtualObject> {
   friend Ray;
+  friend DataDevice;
   friend OpenGLComponent;
 
  public:
@@ -53,6 +58,12 @@ class VirtualObject : public std::enable_shared_from_this<VirtualObject> {
   virtual void RayMotion(uint32_t time, glm::vec3 origin, glm::vec3 direction);
   virtual void RayButton(
       uint32_t serial, uint32_t time, uint32_t button, bool pressed);
+  virtual void DataDeviceEnter(uint32_t serial, glm::vec3 origin,
+      glm::vec3 direction, std::weak_ptr<DataOffer> data_offer);
+  virtual void DataDeviceLeave();
+  virtual void DataDeviceMotion(
+      uint32_t time, glm::vec3 origin, glm::vec3 direction);
+  virtual void DataDeviceDrop();
 
  protected:
   struct zgn_virtual_object *virtual_object_proxy_;
@@ -185,12 +196,63 @@ class Application final : public std::enable_shared_from_this<Application> {
   struct wl_shm *shm_;
   struct zgn_opengl *opengl_;
   struct zgn_shell *shell_;
+  struct zgn_data_device_manager *data_device_manager_;
 
   // other wayland objects
   std::unique_ptr<Ray> ray_;
+  std::unique_ptr<DataDevice> data_device_;
 
   std::shared_ptr<PollEvent> poll_event_;
   int epoll_fd_;
+};
+
+class DataOffer : public std::enable_shared_from_this<DataOffer> {
+  friend DataDevice;
+
+  class ReceivePollEvent : public PollEvent {
+    friend DataOffer;
+
+   public:
+    ReceivePollEvent(int fd, std::function<void(int fd)> callback);
+
+    virtual bool Done(struct epoll_event *ev) override final;
+
+   private:
+    std::function<void(int fd)> callback_;
+  };
+
+ public:
+  DISABLE_MOVE_AND_COPY(DataOffer)
+
+  ~DataOffer();
+
+  void Receive(std::string mime_type, std::function<void(int fd)> callback);
+  void Accept(uint32_t serial, std::string mime_type);
+  void SetActions(uint32_t dnd_actions, uint32_t preferred_action);
+
+  inline std::vector<std::string> mime_types() { return mime_types_; }
+
+ private:
+  static std::shared_ptr<DataOffer> Create(
+      struct zgn_data_offer *id, std::shared_ptr<Application> app);
+
+  static const struct zgn_data_offer_listener data_offer_listener_;
+  static void Offer(
+      void *data, struct zgn_data_offer *zgn_data_offer, const char *mime_type);
+  static void SourceActions(void *data, struct zgn_data_offer *zgn_data_offer,
+      uint32_t source_actions);
+  static void Action(
+      void *data, struct zgn_data_offer *zgn_data_offer, uint32_t dnd_action);
+
+ private:
+  DataOffer(struct zgn_data_offer *id, std::shared_ptr<Application> app);
+
+ private:
+  std::shared_ptr<Application> app_;
+  struct zgn_data_offer *proxy_;
+  uint32_t source_actions_;
+  uint32_t dnd_action_;
+  std::vector<std::string> mime_types_;
 };
 
 class Buffer {
