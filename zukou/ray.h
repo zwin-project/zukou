@@ -9,10 +9,7 @@
 namespace zukou {
 class Ray {
  public:
-  Ray(const Ray &) = delete;
-  Ray(Ray &&) = delete;
-  Ray &operator=(const Ray &) = delete;
-  Ray &operator=(Ray &&) = delete;
+  DISABLE_MOVE_AND_COPY(Ray)
 
   Ray(struct zgn_seat *seat);
   ~Ray();

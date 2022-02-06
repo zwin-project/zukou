@@ -14,6 +14,8 @@ srcs_zukou = [
   'application.cc',
   'buffer.cc',
   'cuboid-window.cc',
+  'data-device.cc',
+  'data-offer.cc',
   'opengl-component.cc',
   'opengl-element-array-buffer.cc',
   'opengl-shader-program.cc',

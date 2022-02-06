@@ -8,6 +8,7 @@
 #include <cstring>
 #include <iostream>
 
+#include "data-device.h"
 #include "ray.h"
 
 namespace zukou {
@@ -75,8 +76,11 @@ void Application::Connect(std::string socket) {
   wl_display_roundtrip(display_);
 
   if (compositor_ == nullptr || seat_ == nullptr || shm_ == nullptr ||
-      opengl_ == nullptr || shell_ == nullptr)
+      opengl_ == nullptr || shell_ == nullptr ||
+      data_device_manager_ == nullptr)
     throw ZukouException("unsupported zigen server");
+
+  data_device_.reset(new DataDevice(data_device_manager_, seat_, self));
 
   epoll_fd_ = epoll_create1(EPOLL_CLOEXEC);
   if (epoll_fd_ == -1) throw ZukouException("epoll_create1 failed");
@@ -166,6 +170,10 @@ void Application::GlobalRegistry(void *data, struct wl_registry *registry,
   } else if (strcmp(interface, "zgn_shell") == 0) {
     app->shell_ = reinterpret_cast<zgn_shell *>(
         wl_registry_bind(registry, id, &zgn_shell_interface, version));
+  } else if (strcmp(interface, "zgn_data_device_manager") == 0) {
+    app->data_device_manager_ =
+        reinterpret_cast<zgn_data_device_manager *>(wl_registry_bind(
+            registry, id, &zgn_data_device_manager_interface, version));
   }
 }
 

@@ -27,6 +27,15 @@ class Cube : public zukou::objects::IObject {
   virtual void RayButton(
       uint32_t serial, uint32_t time, uint32_t button, bool pressed) override;
 
+  virtual void DataDeviceEnter(
+      uint32_t serial, std::weak_ptr<zukou::DataOffer> data_offer) override;
+  virtual void DataDeviceLeave() override;
+  virtual void DataDeviceMotion(
+      uint32_t time, glm::vec3 origin, glm::vec3 direction) override;
+  virtual void DataDeviceDrop() override;
+
+  void DndDataReceived(int fd);
+
   inline glm::vec3 position() { return entity_->position(); }
   inline glm::vec3 half_size() { return entity_->half_size(); }
   inline glm::quat quaternion() { return entity_->quaternion(); }
@@ -40,8 +49,11 @@ class Cube : public zukou::objects::IObject {
  private:
   bool pressed_;
   bool focus_;
+  glm::vec4 focus_color_;
   std::unique_ptr<zukou::entities::FrameCuboid> entity_;
   std::shared_ptr<zukou::VirtualObject> virtual_object_;
+  uint32_t data_device_enter_serial_;
+  std::weak_ptr<zukou::DataOffer> dnd_data_offer_;
 };
 
 #endif  //  ZUKOU_SAMPLE_CUBE_H
