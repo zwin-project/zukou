@@ -26,6 +26,9 @@ class Cube : public zukou::objects::IObject {
       glm::vec3 origin, glm::vec3 direction, uint32_t time) override;
   virtual void RayButton(
       uint32_t serial, uint32_t time, uint32_t button, bool pressed) override;
+  virtual void RayAxis(uint32_t time, uint32_t axis, float value);
+  virtual void RayFrame() override;
+  virtual void RayAxisDiscrete(uint32_t axis, int32_t discrete) override;
 
   virtual void DataDeviceEnter(
       uint32_t serial, std::weak_ptr<zukou::DataOffer> data_offer) override;

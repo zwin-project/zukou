@@ -25,6 +25,11 @@ class Ray {
       struct wl_array *origin, struct wl_array *direction);
   static void Button(void *data, struct zgn_ray *ray, uint32_t serial,
       uint32_t time, uint32_t button, uint32_t state);
+  static void Axis(void *data, struct zgn_ray *ray, uint32_t time,
+      uint32_t axis, wl_fixed_t value);
+  static void Frame(void *data, struct zgn_ray *zgn_ray);
+  static void AxisDiscrete(
+      void *data, struct zgn_ray *zgn_ray, uint32_t axis, int32_t discrete);
 
  private:
   struct zgn_ray *proxy_;

@@ -84,6 +84,14 @@ void VirtualObject::RayButton([[maybe_unused]] uint32_t serial,
     [[maybe_unused]] uint32_t time, [[maybe_unused]] uint32_t button,
     [[maybe_unused]] bool pressed) {}
 
+void VirtualObject::RayAxis([[maybe_unused]] uint32_t time,
+    [[maybe_unused]] uint32_t axis, [[maybe_unused]] float value) {}
+
+void VirtualObject::RayFrame() {}
+
+void VirtualObject::RayAxisDiscrete(
+    [[maybe_unused]] uint32_t axis, [[maybe_unused]] int32_t discrete) {}
+
 void VirtualObject::DataDeviceEnter([[maybe_unused]] uint32_t serial,
     [[maybe_unused]] glm::vec3 origin, [[maybe_unused]] glm::vec3 direction,
     [[maybe_unused]] std::weak_ptr<DataOffer> data_offer) {}

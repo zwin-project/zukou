@@ -5,6 +5,8 @@ namespace objects {
 
 bool ObjectGroup::Init() { return true; }
 
+void ObjectGroup::RayLeave() { this->SetRayFocus(std::weak_ptr<IObject>()); }
+
 void ObjectGroup::RayMotion(
     glm::vec3 origin, glm::vec3 direction, uint32_t time) {
   auto object = this->PickObject(origin, direction);
@@ -20,7 +22,18 @@ void ObjectGroup::RayButton(
     focus->RayButton(serial, time, button, pressed);
 }
 
-void ObjectGroup::RayLeave() { this->SetRayFocus(std::weak_ptr<IObject>()); }
+void ObjectGroup::RayAxis(uint32_t time, uint32_t axis, float value) {
+  if (auto focus = this->ray_focus_.lock()) focus->RayAxis(time, axis, value);
+}
+
+void ObjectGroup::RayFrame() {
+  if (auto focus = this->ray_focus_.lock()) focus->RayFrame();
+}
+
+void ObjectGroup::RayAxisDiscrete(uint32_t axis, int32_t discrete) {
+  if (auto focus = this->ray_focus_.lock())
+    focus->RayAxisDiscrete(axis, discrete);
+}
 
 void ObjectGroup::AddObject(std::weak_ptr<IObject> object) {
   objects_.push_back(object);

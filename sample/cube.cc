@@ -41,6 +41,17 @@ void Cube::RayButton([[maybe_unused]] uint32_t serial,
   virtual_object_->ScheduleNextFrame();
 }
 
+void Cube::RayAxis([[maybe_unused]] uint32_t time,
+    [[maybe_unused]] uint32_t axis, float value) {
+  set_half_size(half_size() * (1 - value / 100));
+  virtual_object_->ScheduleNextFrame();
+}
+
+void Cube::RayFrame() {}
+
+void Cube::RayAxisDiscrete(
+    [[maybe_unused]] uint32_t axis, [[maybe_unused]] int32_t discrete) {}
+
 void Cube::DataDeviceEnter(
     uint32_t serial, std::weak_ptr<zukou::DataOffer> data_offer) {
   data_device_enter_serial_ = serial;

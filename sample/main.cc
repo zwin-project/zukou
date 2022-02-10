@@ -52,6 +52,10 @@ class WindowA : public zukou::CuboidWindow {
     object_group_->RayLeave();
   }
 
+  void RayAxis(uint32_t time, uint32_t axis, float value) {
+    object_group_->RayAxis(time, axis, value);
+  }
+
   virtual void DataDeviceEnter(uint32_t serial,
       [[maybe_unused]] glm::vec3 origin, [[maybe_unused]] glm::vec3 direction,
       std::weak_ptr<zukou::DataOffer> data_offer) override {

@@ -24,6 +24,9 @@ const struct zgn_ray_listener Ray::ray_listener_ = {
     Ray::Leave,
     Ray::Motion,
     Ray::Button,
+    Ray::Axis,
+    Ray::Frame,
+    Ray::AxisDiscrete,
 };
 
 void Ray::Enter(void *data, [[maybe_unused]] struct zgn_ray *zgn_ray,
@@ -68,6 +71,32 @@ void Ray::Button(void *data, [[maybe_unused]] struct zgn_ray *zgn_ray,
   if (auto virtual_object = ray->focus_.lock()) {
     virtual_object->RayButton(
         serial, time, button, state == ZGN_RAY_BUTTON_STATE_PRESSED);
+  }
+}
+
+void Ray::Axis(void *data, [[maybe_unused]] struct zgn_ray *zgn_ray,
+    uint32_t time, uint32_t axis, wl_fixed_t value) {
+  Ray *ray = reinterpret_cast<Ray *>(data);
+
+  if (auto virtual_object = ray->focus_.lock()) {
+    virtual_object->RayAxis(time, axis, wl_fixed_to_double(value));
+  }
+}
+
+void Ray::Frame(void *data, [[maybe_unused]] struct zgn_ray *zgn_ray) {
+  Ray *ray = reinterpret_cast<Ray *>(data);
+
+  if (auto virtual_object = ray->focus_.lock()) {
+    virtual_object->RayFrame();
+  }
+}
+
+void Ray::AxisDiscrete(void *data, [[maybe_unused]] struct zgn_ray *zgn_ray,
+    uint32_t axis, int32_t discrete) {
+  Ray *ray = reinterpret_cast<Ray *>(data);
+
+  if (auto virtual_object = ray->focus_.lock()) {
+    virtual_object->RayAxisDiscrete(axis, discrete);
   }
 }
 
