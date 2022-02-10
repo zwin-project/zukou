@@ -20,6 +20,9 @@ class IObject {
       glm::vec3 origin, glm::vec3 direction, uint32_t time) = 0;
   virtual void RayButton(
       uint32_t serial, uint32_t time, uint32_t button, bool pressed) = 0;
+  virtual void RayAxis(uint32_t time, uint32_t axis, float value) = 0;
+  virtual void RayFrame() = 0;
+  virtual void RayAxisDiscrete(uint32_t axis, int32_t discrete) = 0;
 
   virtual void DataDeviceEnter(
       uint32_t serial, std::weak_ptr<DataOffer> data_offer) = 0;
@@ -34,9 +37,13 @@ class IObject {
 class ObjectGroup {
  public:
   bool Init();
+  void RayLeave();
   void RayMotion(glm::vec3 origin, glm::vec3 direction, uint32_t time);
   void RayButton(uint32_t serial, uint32_t time, uint32_t button, bool pressed);
-  void RayLeave();
+  void RayAxis(uint32_t time, uint32_t axis, float value);
+  void RayFrame();
+  void RayAxisDiscrete(uint32_t axis, int32_t discrete);
+
   void AddObject(std::weak_ptr<IObject> object);
   bool Draw();
 

@@ -58,6 +58,9 @@ class VirtualObject : public std::enable_shared_from_this<VirtualObject> {
   virtual void RayMotion(uint32_t time, glm::vec3 origin, glm::vec3 direction);
   virtual void RayButton(
       uint32_t serial, uint32_t time, uint32_t button, bool pressed);
+  virtual void RayAxis(uint32_t time, uint32_t axis, float value);
+  virtual void RayFrame();
+  virtual void RayAxisDiscrete(uint32_t axis, int32_t discrete);
   virtual void DataDeviceEnter(uint32_t serial, glm::vec3 origin,
       glm::vec3 direction, std::weak_ptr<DataOffer> data_offer);
   virtual void DataDeviceLeave();
