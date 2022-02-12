@@ -52,10 +52,13 @@ class ObjectGroup {
   void DataDeviceMotion(uint32_t time, glm::vec3 origin, glm::vec3 direction);
   void DataDeviceDrop();
 
+  float Intersect(glm::vec3 origin, glm::vec3 direction);
+
  private:
   void SetRayFocus(std::weak_ptr<IObject> object);
   void SetDataDeviceFocus(std::weak_ptr<IObject> object);
-  std::weak_ptr<IObject> PickObject(glm::vec3 origin, glm::vec3 direction);
+  std::weak_ptr<IObject> PickObject(
+      glm::vec3 origin, glm::vec3 direction, float *distance);
 
  private:
   std::list<std::weak_ptr<IObject>> objects_;
