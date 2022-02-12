@@ -9,7 +9,8 @@ void ObjectGroup::RayLeave() { this->SetRayFocus(std::weak_ptr<IObject>()); }
 
 void ObjectGroup::RayMotion(
     glm::vec3 origin, glm::vec3 direction, uint32_t time) {
-  auto object = this->PickObject(origin, direction);
+  float distance;
+  auto object = this->PickObject(origin, direction, &distance);
   this->SetRayFocus(object);
 
   if (auto focus = this->ray_focus_.lock())
@@ -67,7 +68,8 @@ void ObjectGroup::DataDeviceLeave() {
 
 void ObjectGroup::DataDeviceMotion(
     uint32_t time, glm::vec3 origin, glm::vec3 direction) {
-  auto object = this->PickObject(origin, direction);
+  float distance;
+  auto object = this->PickObject(origin, direction, &distance);
   this->SetDataDeviceFocus(object);
 
   if (auto focus = this->data_device_focus_.lock())
@@ -76,6 +78,12 @@ void ObjectGroup::DataDeviceMotion(
 
 void ObjectGroup::DataDeviceDrop() {
   if (auto focus = this->data_device_focus_.lock()) focus->DataDeviceDrop();
+}
+
+float ObjectGroup::Intersect(glm::vec3 origin, glm::vec3 direction) {
+  float distance;
+  PickObject(origin, direction, &distance);
+  return distance;
 }
 
 void ObjectGroup::SetRayFocus(std::weak_ptr<IObject> object_weak_ptr) {
@@ -106,9 +114,10 @@ void ObjectGroup::SetDataDeviceFocus(std::weak_ptr<IObject> object_weak_ptr) {
 }
 
 std::weak_ptr<IObject> ObjectGroup::PickObject(
-    glm::vec3 origin, glm::vec3 direction) {
+    glm::vec3 origin, glm::vec3 direction, float *distance) {
   float min_len = FLT_MAX;
   std::weak_ptr<IObject> next_focus;
+  *distance = -1;
 
   auto it = objects_.begin();
   while (it != objects_.end()) {
@@ -116,6 +125,7 @@ std::weak_ptr<IObject> ObjectGroup::PickObject(
       float len = object->Intersect(origin, direction);
       if (len > 0 && len < min_len) {
         min_len = len;
+        *distance = len;
         next_focus = *it;
       }
       ++it;

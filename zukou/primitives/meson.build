@@ -12,14 +12,30 @@ frame_cuboid_fragment_glsl = custom_target(
   output: 'primitive-frame-cuboid-frag.h'
 )
 
+frame_sphere_vertex_glsl = custom_target(
+  'primitive-frame-sphere-vert.h',
+  command: cmd_textify + [ '-n', 'primitive_frame_sphere_vertex_shader' ],
+  input: 'frame-sphere.vert',
+  output: 'primitive-frame-sphere-vert.h'
+)
+
+frame_sphere_fragment_glsl = custom_target(
+  'primitive-frame-sphere-frag.h',
+  command: cmd_textify + [ '-n', 'primitive_frame_sphere_fragment_shader' ],
+  input: 'frame-sphere.frag',
+  output: 'primitive-frame-sphere-frag.h'
+)
 deps_zukou_primitives = [
   dep_glm,
 ]
 
 srcs_zukou_primitives = [
   'frame-cuboid.cc',
+  'frame-sphere.cc',
   frame_cuboid_fragment_glsl,
   frame_cuboid_vertex_glsl,
+  frame_sphere_fragment_glsl,
+  frame_sphere_vertex_glsl,
   zigen_opengl_client_protocol_h,
 ]
 

@@ -25,12 +25,20 @@ void VirtualObject::FrameCallbackDone(
   wl_callback_destroy(callback);
 
   bool should_commit;
+  zukou::VirtualObjectFrameState state;
   switch (virtual_object->frame_state_) {
     case VirtualObjectFrameState::kRepaintScheduled:
+      virtual_object->frame_state_ = VirtualObjectFrameState::kWaitingNextFrame;
+
       should_commit = virtual_object->Frame();
-      virtual_object->frame_state_ =
-          VirtualObjectFrameState::kWaitingContentUpdate;
+
+      state = virtual_object->frame_state_;
+
       if (should_commit) virtual_object->Commit();
+
+      if (state == VirtualObjectFrameState::kRepaintScheduled)
+        virtual_object->frame_state_ =
+            VirtualObjectFrameState::kRepaintScheduled;
       break;
 
     case VirtualObjectFrameState::kWaitingNextFrame:
@@ -44,15 +52,11 @@ void VirtualObject::FrameCallbackDone(
 }
 
 void VirtualObject::Commit() {
-  if (frame_state_ == VirtualObjectFrameState::kWaitingContentUpdate) {
-    struct wl_callback *callback =
-        zgn_virtual_object_frame(virtual_object_proxy_);
+  struct wl_callback *callback =
+      zgn_virtual_object_frame(virtual_object_proxy_);
 
-    wl_callback_add_listener(
-        callback, &VirtualObject::frame_callback_listener_, this);
-
-    frame_state_ = VirtualObjectFrameState::kWaitingNextFrame;
-  }
+  wl_callback_add_listener(
+      callback, &VirtualObject::frame_callback_listener_, this);
 
   zgn_virtual_object_commit(virtual_object_proxy_);
   app_->Flush();
@@ -67,6 +71,7 @@ void VirtualObject::ScheduleNextFrame() {
       break;
 
     case VirtualObjectFrameState::kWaitingContentUpdate:
+      frame_state_ = VirtualObjectFrameState::kWaitingNextFrame;
       if (this->Frame()) this->Commit();
       break;
   }
