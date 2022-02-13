@@ -14,6 +14,8 @@ class DataDevice {
       struct zgn_seat *seat, std::shared_ptr<Application> app);
   ~DataDevice();
 
+  void SetLength(float length);
+
  private:
   static const struct zgn_data_device_listener data_device_listener_;
   static void DataOffer(void *data, struct zgn_data_device *zgn_data_device,
@@ -32,6 +34,7 @@ class DataDevice {
   std::shared_ptr<Application> app_;
   std::shared_ptr<zukou::DataOffer> data_offer_; /* nullable */
   std::weak_ptr<VirtualObject> focus_;
+  uint32_t enter_serial_;
 };
 
 }  // namespace zukou

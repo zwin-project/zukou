@@ -19,6 +19,10 @@ Ray::Ray(struct zgn_seat *seat) : focus_() {
 
 Ray::~Ray() { zgn_ray_destroy(proxy_); }
 
+void Ray::SetLength(float length) {
+  zgn_ray_set_length(proxy_, enter_serial_, wl_fixed_from_double(length));
+}
+
 const struct zgn_ray_listener Ray::ray_listener_ = {
     Ray::Enter,
     Ray::Leave,
@@ -40,6 +44,8 @@ void Ray::Enter(void *data, [[maybe_unused]] struct zgn_ray *zgn_ray,
 
   virtual_object->RayEnter(serial, glm_helper::vec3_from_wl_array(origin),
       glm_helper::vec3_from_wl_array(direction));
+
+  ray->enter_serial_ = serial;
 }
 
 void Ray::Leave(void *data, [[maybe_unused]] struct zgn_ray *zgn_ray,

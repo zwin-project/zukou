@@ -145,6 +145,14 @@ void Application::Terminate(int exit_status) {
 
 int Application::GetFd() { return wl_display_get_fd(display_); }
 
+void Application::SetRayLength(float length) {
+  if (ray_) ray_->SetLength(length);
+}
+
+void Application::SetDataDeviceLength(float length) {
+  if (data_device_) data_device_->SetLength(length);
+}
+
 const struct wl_registry_listener Application::registry_listener_ = {
     Application::GlobalRegistry,
     Application::GlobalRegistryRemove,

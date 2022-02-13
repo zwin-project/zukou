@@ -17,6 +17,11 @@ DataDevice::DataDevice(struct zgn_data_device_manager *data_device_manager,
 
 DataDevice::~DataDevice() { zgn_data_device_destroy(proxy_); }
 
+void DataDevice::SetLength(float length) {
+  zgn_data_device_set_length(
+      proxy_, enter_serial_, wl_fixed_from_double(length));
+}
+
 const struct zgn_data_device_listener DataDevice::data_device_listener_ = {
     DataDevice::DataOffer,
     DataDevice::Enter,
@@ -50,6 +55,8 @@ void DataDevice::Enter(void *data,
   virtual_object->DataDeviceEnter(serial,
       glm_helper::vec3_from_wl_array(origin),
       glm_helper::vec3_from_wl_array(direction), data_offer);
+
+  data_device->enter_serial_ = serial;
 }
 
 void DataDevice::Leave(
