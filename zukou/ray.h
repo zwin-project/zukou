@@ -14,6 +14,9 @@ class Ray {
   Ray(struct zgn_seat *seat);
   ~Ray();
 
+ public:
+  void SetLength(float length);
+
  private:
   static const struct zgn_ray_listener ray_listener_;
   static void Enter(void *data, struct zgn_ray *ray, uint32_t serial,
@@ -34,6 +37,7 @@ class Ray {
  private:
   struct zgn_ray *proxy_;
   std::weak_ptr<VirtualObject> focus_;
+  uint32_t enter_serial_;
 };
 }  // namespace zukou
 

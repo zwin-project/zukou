@@ -169,6 +169,8 @@ class Application final : public std::enable_shared_from_this<Application> {
   bool Run();
   void Terminate(int exit_status);
   int GetFd();
+  void SetRayLength(float length);
+  void SetDataDeviceLength(float length);
 
  private:
   static const struct wl_registry_listener registry_listener_;
