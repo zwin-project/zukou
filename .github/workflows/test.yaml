@@ -1,0 +1,54 @@
+name: meson_test
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test-with-gcc:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Install dependencies
+        run: |
+          sudo apt-get update &&
+          sudo apt-get install \
+            libwayland-dev libglm-dev libgles-dev meson
+
+      - name: Clone zigen
+        uses: actions/checkout@v2
+        with:
+          repository: zigen-project/zigen
+          path: zigen
+          ref: draft
+      
+      - name: Build zigen
+        working-directory: ./zigen
+        run: |
+          meson build
+          sudo ninja -C build install
+        env:
+          CC: gcc
+
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          path: main
+
+      - name: Build
+        run: |
+          meson build
+          ninja -C build
+        working-directory: ./main
+        env:
+          CC: clang
+          CXX: clang++
+
+      - uses: actions/upload-artifact@v3
+        if: failure()
+        with:
+          name: zukou-test-log
+          path: main/build/meson-logs/
