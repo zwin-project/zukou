@@ -13,6 +13,8 @@ bool to_array(const glm::vec3 &vec, struct wl_array *array);
 
 bool to_array(const glm::quat &quaternion, struct wl_array *array);
 
+bool to_array(const float value, struct wl_array *array);
+
 bool to_array(const off_t value, struct wl_array *array);
 
 bool to_array(const uint64_t value, struct wl_array *array);

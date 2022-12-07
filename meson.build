@@ -40,6 +40,7 @@ glm_dep = dependency('glm')
 wayland_client_dep = dependency('wayland-client', version: wayland_req)
 wayland_scanner_dep = dependency('wayland-scanner')
 zigen_protocols_dep = dependency('zigen-protocols')
+jpeg_dep = dependency('libjpeg')
 
 public_inc = include_directories('include')
 

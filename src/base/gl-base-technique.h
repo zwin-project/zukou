@@ -24,8 +24,8 @@ class GlBaseTechnique::Impl
 
   void Bind(GlVertexArray *vertex_array);
 
-  void Bind(
-      uint32_t binding, std::string name, GlTexture *texture, GLenum target);
+  void Bind(uint32_t binding, std::string name, GlTexture *texture,
+      GLenum target, GlSampler *sampler);
 
   void UniformVector(uint32_t location, const std::string &name,
       enum UniformVariableType type, uint32_t size, uint32_t count,
