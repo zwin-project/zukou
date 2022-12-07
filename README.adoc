@@ -1,3 +1,35 @@
 = ZUKOU
 
 Client library for https://github.com/zigen-project[ZIGEN] windowing system
+
+== Build & Install
+
+=== Dependencies
+
+. zigen protocols +
+Please see https://github.com/zigen-project/zigen[zigen-project/zigen]
+to build and install. +
+[yellow]#***__important__**#: Please use `draft` branch.
+
+. Other dependencies +
+For Ubuntu, other dependencies can be installed with apt-get. See .github/workflows/test.yaml and meson.build for the list of the required packages.
+
+=== Build & Install
+
+[source, shell]
+----
+$ git clone https://github.com/zigen-project/zen.git
+$ cd zen
+$ meson build
+$ ninja -C build install
+----
+
+
+== Run Samples
+
+[source, shell]
+----
+$ ./build/sample/zukou-box
+$ ./build/sample/zukou-celestial-body ./assets/moon.jpg
+----
+

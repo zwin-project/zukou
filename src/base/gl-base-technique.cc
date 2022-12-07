@@ -6,6 +6,7 @@
 #include "convert.h"
 #include "gl-buffer.h"
 #include "gl-program.h"
+#include "gl-sampler.h"
 #include "gl-texture.h"
 #include "gl-vertex-array.h"
 #include "logger.h"
@@ -46,10 +47,10 @@ GlBaseTechnique::Bind(GlVertexArray *vertex_array)
 }
 
 ZUKOU_EXPORT void
-GlBaseTechnique::Bind(
-    uint32_t binding, std::string name, GlTexture *texture, GLenum target)
+GlBaseTechnique::Bind(uint32_t binding, std::string name, GlTexture *texture,
+    GLenum target, GlSampler *sampler)
 {
-  pimpl->Bind(binding, name, texture, target);
+  pimpl->Bind(binding, name, texture, target, sampler);
 }
 
 ZUKOU_EXPORT void
@@ -118,11 +119,11 @@ GlBaseTechnique::Impl::Bind(GlVertexArray *vertex_array)
 }
 
 void
-GlBaseTechnique::Impl::Bind(
-    uint32_t binding, std::string name, GlTexture *texture, GLenum target)
+GlBaseTechnique::Impl::Bind(uint32_t binding, std::string name,
+    GlTexture *texture, GLenum target, GlSampler *sampler)
 {
-  zgn_gl_base_technique_bind_texture(
-      proxy_, binding, name.c_str(), texture->pimpl->proxy(), target);
+  zgn_gl_base_technique_bind_texture(proxy_, binding, name.c_str(),
+      texture->pimpl->proxy(), target, sampler->pimpl->proxy());
 }
 
 void

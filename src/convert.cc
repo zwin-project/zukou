@@ -41,6 +41,18 @@ to_array(const glm::quat &quaternion, struct wl_array *array)
 }
 
 bool
+to_array(const float value, struct wl_array *array)
+{
+  wl_array_init(array);
+
+  auto container = static_cast<float *>(wl_array_add(array, sizeof(float)));
+  if (container == nullptr) return false;
+
+  *container = value;
+  return true;
+}
+
+bool
 to_array(const off_t value, struct wl_array *array)
 {
   wl_array_init(array);

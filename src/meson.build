@@ -10,6 +10,7 @@ _source = [
   'base/gl-base-technique.cc',
   'base/gl-buffer.cc',
   'base/gl-program.cc',
+  'base/gl-sampler.cc',
   'base/gl-shader.cc',
   'base/gl-texture.cc',
   'base/gl-vertex-array.cc',

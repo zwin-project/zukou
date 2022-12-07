@@ -244,6 +244,25 @@ class GlTexture
   const std::unique_ptr<Impl> pimpl;
 };
 
+class GlSampler
+{
+  class Impl;
+
+ public:
+  DISABLE_MOVE_AND_COPY(GlSampler);
+  GlSampler() = delete;
+  GlSampler(System *system);
+  ~GlSampler();
+
+  bool Init();
+
+  void Parameteri(GLenum pname, GLint param);
+
+  void Parameterf(GLenum pname, GLfloat param);
+
+  const std::unique_ptr<Impl> pimpl;
+};
+
 class GlVertexArray
 {
   class Impl;
@@ -329,8 +348,8 @@ class GlBaseTechnique
 
   void Bind(GlVertexArray *vertex_array);
 
-  void Bind(
-      uint32_t binding, std::string name, GlTexture *texture, GLenum target);
+  void Bind(uint32_t binding, std::string name, GlTexture *texture,
+      GLenum target, GlSampler *sampler);
 
   const std::unique_ptr<Impl> pimpl;
 
