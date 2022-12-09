@@ -29,7 +29,7 @@ class CelestialBody final : public zukou::IBoundedDelegate,
     return true;
   }
 
-  bool Run() { return system_.Run(); }
+  int Run() { return system_.Run(); }
 
   void Configure(glm::vec3 half_size, uint32_t serial) override
   {
@@ -68,7 +68,5 @@ main(int argc, char const* argv[])
 
   if (!celestial_body.Init(0.1)) return EXIT_FAILURE;
 
-  if (!celestial_body.Run()) return EXIT_FAILURE;
-
-  return EXIT_SUCCESS;
+  return celestial_body.Run();
 }

@@ -9,14 +9,20 @@ on:
       - main
 
 jobs:
-  test-with-gcc:
+  test-with-clang:
     runs-on: ubuntu-22.04
+
+    env:
+      CC: clang
+      CXX: clang++
+
     steps:
       - name: Install dependencies
         run: |
           sudo apt-get update &&
           sudo apt-get install \
-            libwayland-dev libglm-dev libgles-dev libjpeg-dev meson
+            libwayland-dev wayland-protocols libglm-dev libgles-dev \
+            libjpeg-dev meson
 
       - name: Clone zigen
         uses: actions/checkout@v2
@@ -30,8 +36,18 @@ jobs:
         run: |
           meson build
           sudo ninja -C build install
-        env:
-          CC: gcc
+
+      - name: Clone zen-protocols
+        uses: actions/checkout@v2
+        with:
+          repository: zigen-project/zen-protocols
+          path: zen-protocols
+      
+      - name: Build zen-protocols
+        working-directory: ./zen-protocols
+        run: |
+          meson build
+          sudo ninja -C build install
 
       - name: Checkout
         uses: actions/checkout@v2
@@ -43,9 +59,6 @@ jobs:
           meson build
           ninja -C build
         working-directory: ./main
-        env:
-          CC: clang
-          CXX: clang++
 
       - uses: actions/upload-artifact@v3
         if: failure()

@@ -1,3 +1,4 @@
+_zen_protocols_dir = zen_protocols_dep.get_variable('pkgdatadir')
 _zigen_protocols_dir = zigen_protocols_dep.get_variable('pkgdatadir')
 _scanner_path = wayland_scanner_dep.get_variable('wayland_scanner')
 _wayland_scanner = find_program(_scanner_path)
@@ -7,6 +8,7 @@ _protocols = {
   'zigen': join_paths(_zigen_protocols_dir, 'zigen.xml'),
   'zigen-gles-v32': join_paths(_zigen_protocols_dir, 'zigen-gles-v32.xml'),
   'zigen-shell': join_paths(_zigen_protocols_dir, 'zigen-shell.xml'),
+  'zen-space': join_paths(_zen_protocols_dir, 'zen-space.xml'),
 }
 
 # protocols[<protocol-name>][<type>]

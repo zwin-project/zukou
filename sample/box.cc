@@ -111,7 +111,7 @@ class Box : public zukou::IBoundedDelegate, public zukou::ISystemDelegate
     bounded_.Commit();
   }
 
-  bool Run() { return system_.Run(); }
+  int Run() { return system_.Run(); }
 
  private:
   void CalcInnerCuboid(glm::vec3 half_size)
@@ -154,7 +154,5 @@ main()
 
   if (!box.Init(half_size)) return EXIT_FAILURE;
 
-  if (!box.Run()) return EXIT_FAILURE;
-
-  return EXIT_SUCCESS;
+  return box.Run();
 }

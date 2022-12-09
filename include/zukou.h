@@ -44,7 +44,10 @@ class System final
 
   bool Init(const char *socket = nullptr) const;
 
-  bool Run() const;
+  /** returns exit status */
+  int Run() const;
+
+  void Terminate(int exit_status);
 
   const std::unique_ptr<Impl> pimpl;
 };
@@ -129,6 +132,31 @@ class VirtualObject
   void Commit();
 
   void NextFrame();
+
+  const std::unique_ptr<Impl> pimpl;
+};
+
+struct ISpaceDelegate : public IVirtualObjectDelegate {
+  virtual ~ISpaceDelegate() = default;
+
+  virtual void Enter() {}
+
+  virtual void Leave() {}
+
+  virtual void Shutdown() {}
+};
+
+class Space final : public VirtualObject
+{
+  class Impl;
+
+ public:
+  DISABLE_MOVE_AND_COPY(Space);
+  Space() = delete;
+  Space(System *system, ISpaceDelegate *delegate);
+  ~Space();
+
+  bool Init();
 
   const std::unique_ptr<Impl> pimpl;
 };
@@ -361,5 +389,8 @@ class GlBaseTechnique
   void UniformMatrix(uint32_t location, const std::string &name, uint32_t col,
       uint32_t row, uint32_t count, bool transpose, void *value);
 };
+
+class StaticObject
+{};
 
 }  // namespace zukou

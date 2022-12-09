@@ -1,5 +1,5 @@
 project(
-  'zikou', 'c', 'cpp',
+  'zukou', 'c', 'cpp',
   version: '0.0.1',
   license: 'MIT',
   meson_version: '>= 0.58.0',
@@ -35,10 +35,12 @@ foreach func : have_funcs
 endforeach
 
 wayland_req = '>= 1.18.0'
+zen_protocols_req = '0.0.1'
 
 glm_dep = dependency('glm')
 wayland_client_dep = dependency('wayland-client', version: wayland_req)
 wayland_scanner_dep = dependency('wayland-scanner')
+zen_protocols_dep = dependency('zen-protocols', version: zen_protocols_req)
 zigen_protocols_dep = dependency('zigen-protocols')
 jpeg_dep = dependency('libjpeg')
 
