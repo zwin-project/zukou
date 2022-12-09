@@ -137,6 +137,12 @@ System::Impl::HandleGlobal(void *data, struct wl_registry *registry,
     if (self->zgn_shm_) zgn_shm_destroy(self->zgn_shm_);
     self->zgn_shm_ = static_cast<zgn_shm *>(
         wl_registry_bind(registry, name, &zgn_shm_interface, version));
+  } else if (std::strcmp(interface, "zen_space_manager") == 0) {
+    if (self->zen_space_manager_)
+      zen_space_manager_destroy(self->zen_space_manager_);
+    self->zen_space_manager_ =
+        static_cast<zen_space_manager *>(wl_registry_bind(
+            registry, name, &zen_space_manager_interface, version));
   }
 }
 
@@ -186,6 +192,9 @@ System::Impl::TryConnect(const char *socket)
   return true;
 
 err_globals:
+  if (zen_space_manager_) zen_space_manager_destroy(zen_space_manager_);
+  zen_space_manager_ = nullptr;
+
   if (zgn_shm_) zgn_shm_destroy(zgn_shm_);
   zgn_shm_ = nullptr;
 
@@ -268,11 +277,17 @@ System::Init(const char *socket) const
   return connected;
 }
 
-ZUKOU_EXPORT bool
+ZUKOU_EXPORT int
 System::Run() const
 {
   wl_display_flush(pimpl->display_);
   return pimpl->loop_.Run();
+}
+
+ZUKOU_EXPORT void
+System::Terminate(int exit_status)
+{
+  pimpl->loop_.Terminate(exit_status);
 }
 
 ZUKOU_EXPORT
@@ -285,6 +300,7 @@ System::Impl::Impl(ISystemDelegate *delegate) : delegate_(delegate) {}
 
 System::Impl::~Impl()
 {
+  if (zen_space_manager_) zen_space_manager_destroy(zen_space_manager_);
   if (zgn_shm_) zgn_shm_destroy(zgn_shm_);
   if (zgn_shell_) zgn_shell_destroy(zgn_shell_);
   if (zgn_gles_v32_) zgn_gles_v32_destroy(zgn_gles_v32_);
