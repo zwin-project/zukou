@@ -1,6 +1,6 @@
 project(
   'zukou', 'c', 'cpp',
-  version: '0.0.1',
+  version: '0.0.2',
   license: 'MIT',
   meson_version: '>= 0.58.0',
   default_options: ['warning_level=3', 'werror=true', 'optimization=2', 'c_std=gnu11', 'cpp_std=gnu++17'],
@@ -35,13 +35,12 @@ foreach func : have_funcs
 endforeach
 
 wayland_req = '>= 1.18.0'
-zen_protocols_req = '0.0.1'
+zigen_protocols_req = '0.0.2'
 
 glm_dep = dependency('glm')
 wayland_client_dep = dependency('wayland-client', version: wayland_req)
 wayland_scanner_dep = dependency('wayland-scanner')
-zen_protocols_dep = dependency('zen-protocols', version: zen_protocols_req)
-zigen_protocols_dep = dependency('zigen-protocols')
+zigen_protocols_dep = dependency('zigen-protocols', version: zigen_protocols_req)
 jpeg_dep = dependency('libjpeg')
 
 public_inc = include_directories('include')

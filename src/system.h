@@ -3,7 +3,6 @@
 #include <zukou.h>
 
 #include <wayland-client.h>
-#include <zen-space-client-protocol.h>
 #include <zigen-client-protocol.h>
 #include <zigen-gles-v32-client-protocol.h>
 #include <zigen-shell-client-protocol.h>
@@ -27,9 +26,6 @@ class System::Impl
   inline zgn_gles_v32 *gles_v32();
   inline zgn_shell *shell();
   inline zgn_shm *shm();
-
-  /** nullable */
-  inline zen_space_manager *space_manager();
 
  private:
   static const wl_registry_listener registry_listener_;
@@ -68,7 +64,6 @@ class System::Impl
   zgn_gles_v32 *zgn_gles_v32_ = nullptr;
   zgn_shell *zgn_shell_ = nullptr;
   zgn_shm *zgn_shm_ = nullptr;
-  zen_space_manager *zen_space_manager_ = nullptr;  // nullable
 
   zgn_ray *zgn_ray_ = nullptr;  // nullable
 
@@ -110,12 +105,6 @@ inline zgn_shm *
 System::Impl::shm()
 {
   return zgn_shm_;
-}
-
-inline zen_space_manager *
-System::Impl::space_manager()
-{
-  return zen_space_manager_;
 }
 
 }  // namespace zukou

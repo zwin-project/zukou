@@ -136,8 +136,8 @@ class VirtualObject
   const std::unique_ptr<Impl> pimpl;
 };
 
-struct ISpaceDelegate : public IVirtualObjectDelegate {
-  virtual ~ISpaceDelegate() = default;
+struct IExpansiveDelegate : public IVirtualObjectDelegate {
+  virtual ~IExpansiveDelegate() = default;
 
   virtual void Enter() {}
 
@@ -146,15 +146,15 @@ struct ISpaceDelegate : public IVirtualObjectDelegate {
   virtual void Shutdown() {}
 };
 
-class Space final : public VirtualObject
+class Expansive final : public VirtualObject
 {
   class Impl;
 
  public:
-  DISABLE_MOVE_AND_COPY(Space);
-  Space() = delete;
-  Space(System *system, ISpaceDelegate *delegate);
-  ~Space();
+  DISABLE_MOVE_AND_COPY(Expansive);
+  Expansive() = delete;
+  Expansive(System *system, IExpansiveDelegate *delegate);
+  ~Expansive();
 
   bool Init();
 

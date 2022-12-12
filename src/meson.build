@@ -17,11 +17,9 @@ _source = [
   'base/region.cc',
   'base/rendering-unit.cc',
   'base/shm-pool.cc',
-  'base/space.cc',
+  'base/expansive.cc',
   'base/virtual-object.cc',
 
-  protocols['zen-space']['private-code'],
-  protocols['zen-space']['client-header'],
   protocols['zigen']['private-code'],
   protocols['zigen']['client-header'],
   protocols['zigen-shell']['private-code'],
