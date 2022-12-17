@@ -22,6 +22,12 @@ GlTexture::Image2D(GLenum target, GLint level, GLint internal_format,
       type, buffer);
 }
 
+ZUKOU_EXPORT void
+GlTexture::GenerateMipmap(GLenum target)
+{
+  pimpl->GenerateMipmap(target);
+}
+
 ZUKOU_EXPORT
 GlTexture::GlTexture(System *system) : pimpl(new Impl(system)) {}
 
@@ -47,6 +53,12 @@ GlTexture::Impl::Image2D(GLenum target, GLint level, GLint internal_format,
 {
   zgn_gl_texture_image_2d(proxy_, target, level, internal_format, width, height,
       border, format, type, buffer->pimpl->proxy());
+}
+
+void
+GlTexture::Impl::GenerateMipmap(GLenum target)
+{
+  zgn_gl_texture_generate_mipmap(proxy_, target);
 }
 
 GlTexture::Impl::Impl(System *system) : system_(system) {}

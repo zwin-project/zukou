@@ -269,6 +269,8 @@ class GlTexture
   void Image2D(GLenum target, GLint level, GLint internal_format, GLsizei width,
       GLsizei height, GLint border, GLenum format, GLenum type, Buffer *buffer);
 
+  void GenerateMipmap(GLenum target);
+
   const std::unique_ptr<Impl> pimpl;
 };
 
