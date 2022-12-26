@@ -49,6 +49,15 @@ class System::Impl
       uint32_t time, struct wl_array *origin, struct wl_array *direction);
   static void HandleRayButton(void *data, struct zgn_ray *zgn_ray,
       uint32_t serial, uint32_t time, uint32_t button, uint32_t state);
+  static void HandleRayAxis(void *data, struct zgn_ray *zgn_ray, uint32_t time,
+      uint32_t axis, wl_fixed_t value);
+  static void HandleRayAxisSource(
+      void *data, struct zgn_ray *zgn_ray, uint32_t axis_source);
+  static void HandleRayAxisStop(
+      void *data, struct zgn_ray *zgn_ray, uint32_t time, uint32_t axis);
+  static void HandleRayAxisDiscrete(
+      void *data, struct zgn_ray *zgn_ray, uint32_t axis, int32_t discrete);
+  static void HandleRayFrame(void *data, struct zgn_ray *zgn_ray);
 
   bool TryConnect(const char *socket /*nonnull*/);
 
@@ -66,6 +75,8 @@ class System::Impl
   zgn_shm *zgn_shm_ = nullptr;
 
   zgn_ray *zgn_ray_ = nullptr;  // nullable
+
+  RayAxisEvent ray_axis_event_;
 
   Loop loop_;
   std::unique_ptr<EventSource> event_source_;
