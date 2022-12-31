@@ -17,6 +17,11 @@ const zgn_ray_listener System::Impl::ray_listener_ = {
     System::Impl::HandleRayLeave,
     System::Impl::HandleRayMotion,
     System::Impl::HandleRayButton,
+    System::Impl::HandleRayAxis,
+    System::Impl::HandleRayAxisSource,
+    System::Impl::HandleRayAxisStop,
+    System::Impl::HandleRayAxisDiscrete,
+    System::Impl::HandleRayFrame,
 };
 
 void
@@ -80,6 +85,88 @@ System::Impl::HandleRayButton(void *data, struct zgn_ray * /*zgn_ray*/,
     assert(false && "unknown ray button state");
   }
   self->delegate_->RayButton(serial, time, button, pressed);
+}
+
+void
+System::Impl::HandleRayAxis(void *data, struct zgn_ray * /*zgn_ray*/,
+    uint32_t /*time*/, uint32_t axis, wl_fixed_t value)
+{
+  auto self = static_cast<System::Impl *>(data);
+  if (!self->delegate_) return;
+
+  if (axis == ZGN_RAY_AXIS_HORIZONTAL_SCROLL) {
+    self->ray_axis_event_.horizontal += wl_fixed_to_double(value);
+  } else {
+    self->ray_axis_event_.vertical += wl_fixed_to_double(value);
+  }
+}
+
+void
+System::Impl::HandleRayAxisSource(
+    void *data, struct zgn_ray * /*zgn_ray*/, uint32_t axis_source)
+{
+  auto self = static_cast<System::Impl *>(data);
+  if (!self->delegate_) return;
+
+  switch (axis_source) {
+    case ZGN_RAY_AXIS_SOURCE_WHEEL:
+      self->ray_axis_event_.source = RayAxisEvent::kWheel;
+      return;
+
+    case ZGN_RAY_AXIS_SOURCE_FINGER:
+      self->ray_axis_event_.source = RayAxisEvent::kFinger;
+      return;
+
+    case ZGN_RAY_AXIS_SOURCE_CONTINUOUS:
+      self->ray_axis_event_.source = RayAxisEvent::kContinuous;
+      return;
+
+    case ZGN_RAY_AXIS_SOURCE_WHEEL_TILT:
+      self->ray_axis_event_.source = RayAxisEvent::kWheelTilt;
+      return;
+
+    default:
+      return;
+  }
+}
+
+void
+System::Impl::HandleRayAxisStop(
+    void *data, struct zgn_ray * /*zgn_ray*/, uint32_t /*time*/, uint32_t axis)
+{
+  auto self = static_cast<System::Impl *>(data);
+  if (!self->delegate_) return;
+
+  if (axis == ZGN_RAY_AXIS_HORIZONTAL_SCROLL) {
+    self->ray_axis_event_.stop_horizontal = true;
+  } else {
+    self->ray_axis_event_.stop_vertical = true;
+  }
+}
+
+void
+System::Impl::HandleRayAxisDiscrete(
+    void *data, struct zgn_ray * /*zgn_ray*/, uint32_t axis, int32_t discrete)
+{
+  auto self = static_cast<System::Impl *>(data);
+  if (!self->delegate_) return;
+
+  if (axis == ZGN_RAY_AXIS_HORIZONTAL_SCROLL) {
+    self->ray_axis_event_.discrete_horizontal += discrete;
+  } else {
+    self->ray_axis_event_.discrete_vertical += discrete;
+  }
+}
+
+void
+System::Impl::HandleRayFrame(void *data, struct zgn_ray * /*zgn_ray*/)
+{
+  auto self = static_cast<System::Impl *>(data);
+  if (!self->delegate_) return;
+
+  self->delegate_->RayAxisFrame(self->ray_axis_event_);
+
+  self->ray_axis_event_ = RayAxisEvent();
 }
 
 const zgn_seat_listener System::Impl::seat_listener_ = {

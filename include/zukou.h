@@ -17,6 +17,23 @@ namespace zukou {
 
 class VirtualObject;
 
+struct RayAxisEvent {
+  enum RaySource {
+    kWheel = 0,
+    kFinger,
+    kContinuous,
+    kWheelTilt,
+  };
+
+  double horizontal = 0;
+  double vertical = 0;
+  int32_t discrete_horizontal = 0;
+  int32_t discrete_vertical = 0;
+  enum RaySource source = kWheel;
+  bool stop_horizontal = false;
+  bool stop_vertical = false;
+};
+
 struct ISystemDelegate {
   virtual ~ISystemDelegate() = default;
 
@@ -31,6 +48,8 @@ struct ISystemDelegate {
 
   virtual void RayButton(uint32_t /*serial*/, uint32_t /*time*/,
       uint32_t /*button*/, bool /*pressed*/){};
+
+  virtual void RayAxisFrame(const RayAxisEvent & /*event*/){};
 };
 
 class System final
