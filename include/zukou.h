@@ -177,6 +177,8 @@ class Expansive final : public VirtualObject
 
   bool Init();
 
+  void SetRegion(Region *region);
+
   const std::unique_ptr<Impl> pimpl;
 };
 

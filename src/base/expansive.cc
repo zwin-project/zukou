@@ -2,6 +2,7 @@
 
 #include "common.h"
 #include "logger.h"
+#include "region.h"
 #include "system.h"
 #include "virtual-object.h"
 
@@ -13,6 +14,12 @@ Expansive::Init()
   if (!VirtualObject::Init()) return false;
 
   return pimpl->Init(this);
+}
+
+ZUKOU_EXPORT void
+Expansive::SetRegion(Region* region)
+{
+  pimpl->SetRegion(region);
 }
 
 ZUKOU_EXPORT
@@ -70,6 +77,12 @@ Expansive::Impl::Init(VirtualObject* virtual_object)
   zgn_expansive_add_listener(proxy_, &Expansive::Impl::listener_, this);
 
   return true;
+}
+
+void
+Expansive::Impl::SetRegion(Region* region)
+{
+  zgn_expansive_set_region(proxy_, region->pimpl->proxy());
 }
 
 Expansive::Impl::Impl(System* system, IExpansiveDelegate* delegate)
