@@ -15,6 +15,8 @@ class Expansive::Impl
 
   bool Init(VirtualObject* virtual_object);
 
+  void SetRegion(Region* region);
+
   inline zgn_expansive* proxy();
 
  private:
