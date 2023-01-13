@@ -50,6 +50,7 @@ class Box : public zukou::IBoundedDelegate, public zukou::ISystemDelegate
   {
     intersecting_ = true;
     bounded_.NextFrame();
+    bounded_.SetTitle("drag to move!");
     bounded_.Commit();
   };
 
@@ -58,6 +59,7 @@ class Box : public zukou::IBoundedDelegate, public zukou::ISystemDelegate
   {
     intersecting_ = false;
     bounded_.NextFrame();
+    bounded_.SetTitle("Zukou Simple Box");
     bounded_.Commit();
   };
 
@@ -83,6 +85,7 @@ class Box : public zukou::IBoundedDelegate, public zukou::ISystemDelegate
     region.AddCuboid(inner_cuboid_half_size_, inner_cuboid_center_,
         inner_cuboid_quaternion_);
 
+    bounded_.SetTitle("Zukou Simple Box");
     bounded_.SetRegion(&region);
 
     bounded_.AckConfigure(serial);

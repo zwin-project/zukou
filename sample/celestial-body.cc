@@ -36,6 +36,7 @@ class CelestialBody final : public zukou::IBoundedDelegate,
     float radius = glm::min(half_size.x, glm::min(half_size.y, half_size.z));
     sphere_.Render(radius, glm::mat4(1));
 
+    bounded_.SetTitle("Zukou Celestial Body");
     bounded_.AckConfigure(serial);
     bounded_.Commit();
   }

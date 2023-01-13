@@ -202,6 +202,8 @@ class Bounded final : public VirtualObject
 
   void AckConfigure(uint32_t serial);
 
+  void SetTitle(const std::string &title);
+
   void SetRegion(Region *region);
 
   void Move(uint32_t serial);
