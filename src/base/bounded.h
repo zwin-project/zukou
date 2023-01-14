@@ -2,7 +2,7 @@
 
 #include <zukou.h>
 
-#include <zigen-shell-client-protocol.h>
+#include <zwin-shell-client-protocol.h>
 
 #include <glm/vec3.hpp>
 
@@ -25,20 +25,20 @@ class Bounded::Impl
 
   void Move(uint32_t serial);
 
-  inline zgn_bounded* proxy();
+  inline zwn_bounded* proxy();
 
  private:
-  static const zgn_bounded_listener listener_;
-  static void HandleConfigure(void* data, zgn_bounded* zgn_bounded,
+  static const zwn_bounded_listener listener_;
+  static void HandleConfigure(void* data, zwn_bounded* zwn_bounded,
       struct wl_array* half_size, uint32_t serial);
 
   System* system_;
   IBoundedDelegate* delegate_;
 
-  zgn_bounded* proxy_ = nullptr;
+  zwn_bounded* proxy_ = nullptr;
 };
 
-inline zgn_bounded*
+inline zwn_bounded*
 Bounded::Impl::proxy()
 {
   return proxy_;

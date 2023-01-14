@@ -2,7 +2,7 @@
 
 #include <zukou.h>
 
-#include <zigen-shell-client-protocol.h>
+#include <zwin-shell-client-protocol.h>
 
 namespace zukou {
 
@@ -17,21 +17,21 @@ class Expansive::Impl
 
   void SetRegion(Region* region);
 
-  inline zgn_expansive* proxy();
+  inline zwn_expansive* proxy();
 
  private:
-  static const zgn_expansive_listener listener_;
-  static void HandleEnter(void* data, struct zgn_expansive* zgn_expansive);
-  static void HandleLeave(void* data, struct zgn_expansive* zgn_expansive);
-  static void HandleShutdown(void* data, struct zgn_expansive* zgn_expansive);
+  static const zwn_expansive_listener listener_;
+  static void HandleEnter(void* data, struct zwn_expansive* zwn_expansive);
+  static void HandleLeave(void* data, struct zwn_expansive* zwn_expansive);
+  static void HandleShutdown(void* data, struct zwn_expansive* zwn_expansive);
 
   System* system_;
   IExpansiveDelegate* delegate_;
 
-  zgn_expansive* proxy_;
+  zwn_expansive* proxy_;
 };
 
-inline zgn_expansive*
+inline zwn_expansive*
 Expansive::Impl::proxy()
 {
   return proxy_;

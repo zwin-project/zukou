@@ -36,7 +36,7 @@ Region::Impl::AddCuboid(const glm::vec3& half_size, const glm::vec3& center,
   to_array(center, &center_wl_array);
   to_array(quaternion, &quaternion_wl_array);
 
-  zgn_region_add_cuboid(
+  zwn_region_add_cuboid(
       proxy_, &half_size_wl_array, &center_wl_array, &quaternion_wl_array);
 
   wl_array_release(&half_size_wl_array);
@@ -47,7 +47,7 @@ Region::Impl::AddCuboid(const glm::vec3& half_size, const glm::vec3& center,
 bool
 Region::Impl::Init()
 {
-  proxy_ = zgn_compositor_create_region(system_->pimpl->compositor());
+  proxy_ = zwn_compositor_create_region(system_->pimpl->compositor());
   if (proxy_ == nullptr) {
     LOG_ERROR("Failed to create region proxy");
     return false;
@@ -61,7 +61,7 @@ Region::Impl::Impl(System* system) : system_(system) {}
 Region::Impl::~Impl()
 {
   if (proxy_) {
-    zgn_region_destroy(proxy_);
+    zwn_region_destroy(proxy_);
   }
 }
 

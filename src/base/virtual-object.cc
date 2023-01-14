@@ -39,7 +39,7 @@ const wl_callback_listener VirtualObject::Impl::callback_listener_ = {
 bool
 VirtualObject::Impl::Init()
 {
-  proxy_ = zgn_compositor_create_virtual_object(system_->pimpl->compositor());
+  proxy_ = zwn_compositor_create_virtual_object(system_->pimpl->compositor());
   if (proxy_ == nullptr) {
     LOG_ERROR("Failed to create virtual object proxy");
     return false;
@@ -53,7 +53,7 @@ VirtualObject::Impl::Init()
 void
 VirtualObject::Impl::Commit()
 {
-  zgn_virtual_object_commit(proxy_);
+  zwn_virtual_object_commit(proxy_);
 }
 
 void
@@ -61,7 +61,7 @@ VirtualObject::Impl::NextFrame()
 {
   if (callback_) return;
 
-  callback_ = zgn_virtual_object_frame(proxy_);
+  callback_ = zwn_virtual_object_frame(proxy_);
   wl_callback_add_listener(
       callback_, &VirtualObject::Impl::callback_listener_, this);
 }
@@ -89,7 +89,7 @@ VirtualObject::Impl::~Impl()
   }
 
   if (proxy_) {
-    zgn_virtual_object_destroy(proxy_);
+    zwn_virtual_object_destroy(proxy_);
   }
 }
 

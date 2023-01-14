@@ -76,7 +76,7 @@ GlBaseTechnique::~GlBaseTechnique() = default;
 bool
 GlBaseTechnique::Impl::Init(RenderingUnit *unit)
 {
-  proxy_ = zgn_gles_v32_create_gl_base_technique(
+  proxy_ = zwn_gles_v32_create_gl_base_technique(
       system_->pimpl->gles_v32(), unit->pimpl->proxy());
   if (proxy_ == nullptr) {
     LOG_ERROR("Failed to create base technique proxy");
@@ -89,7 +89,7 @@ GlBaseTechnique::Impl::Init(RenderingUnit *unit)
 void
 GlBaseTechnique::Impl::DrawArrays(GLenum mode, GLint first, GLsizei count)
 {
-  zgn_gl_base_technique_draw_arrays(proxy_, mode, first, count);
+  zwn_gl_base_technique_draw_arrays(proxy_, mode, first, count);
 }
 
 void
@@ -100,7 +100,7 @@ GlBaseTechnique::Impl::DrawElements(GLenum mode, GLsizei count, GLenum type,
 
   to_array(offset, &offset_wl_array);
 
-  zgn_gl_base_technique_draw_elements(proxy_, mode, count, type,
+  zwn_gl_base_technique_draw_elements(proxy_, mode, count, type,
       &offset_wl_array, element_array_buffer->pimpl->proxy());
 
   wl_array_release(&offset_wl_array);
@@ -109,20 +109,20 @@ GlBaseTechnique::Impl::DrawElements(GLenum mode, GLsizei count, GLenum type,
 void
 GlBaseTechnique::Impl::Bind(GlProgram *program)
 {
-  zgn_gl_base_technique_bind_program(proxy_, program->pimpl->proxy());
+  zwn_gl_base_technique_bind_program(proxy_, program->pimpl->proxy());
 }
 
 void
 GlBaseTechnique::Impl::Bind(GlVertexArray *vertex_array)
 {
-  zgn_gl_base_technique_bind_vertex_array(proxy_, vertex_array->pimpl->proxy());
+  zwn_gl_base_technique_bind_vertex_array(proxy_, vertex_array->pimpl->proxy());
 }
 
 void
 GlBaseTechnique::Impl::Bind(uint32_t binding, std::string name,
     GlTexture *texture, GLenum target, GlSampler *sampler)
 {
-  zgn_gl_base_technique_bind_texture(proxy_, binding, name.c_str(),
+  zwn_gl_base_technique_bind_texture(proxy_, binding, name.c_str(),
       texture->pimpl->proxy(), target, sampler->pimpl->proxy());
 }
 
@@ -132,16 +132,16 @@ GlBaseTechnique::Impl::UniformVector(uint32_t location, const std::string &name,
 {
   wl_array array;
 
-  enum zgn_gl_base_technique_uniform_variable_type zgn_type;
+  enum zwn_gl_base_technique_uniform_variable_type zwn_type;
   switch (type) {
     case kFloat:
-      zgn_type = ZGN_GL_BASE_TECHNIQUE_UNIFORM_VARIABLE_TYPE_FLOAT;
+      zwn_type = ZWN_GL_BASE_TECHNIQUE_UNIFORM_VARIABLE_TYPE_FLOAT;
       break;
     case kInt:
-      zgn_type = ZGN_GL_BASE_TECHNIQUE_UNIFORM_VARIABLE_TYPE_INT;
+      zwn_type = ZWN_GL_BASE_TECHNIQUE_UNIFORM_VARIABLE_TYPE_INT;
       break;
     case kUint:
-      zgn_type = ZGN_GL_BASE_TECHNIQUE_UNIFORM_VARIABLE_TYPE_UINT;
+      zwn_type = ZWN_GL_BASE_TECHNIQUE_UNIFORM_VARIABLE_TYPE_UINT;
       break;
   }
 
@@ -153,8 +153,8 @@ GlBaseTechnique::Impl::UniformVector(uint32_t location, const std::string &name,
     std::memcpy(data, value, value_size);
   }
 
-  zgn_gl_base_technique_uniform_vector(
-      proxy_, location, name.c_str(), zgn_type, size, count, &array);
+  zwn_gl_base_technique_uniform_vector(
+      proxy_, location, name.c_str(), zwn_type, size, count, &array);
 
   wl_array_release(&array);
 }
@@ -172,7 +172,7 @@ GlBaseTechnique::Impl::UniformMatrix(uint32_t location, const std::string &name,
     std::memcpy(data, value, value_size);
   }
 
-  zgn_gl_base_technique_uniform_matrix(
+  zwn_gl_base_technique_uniform_matrix(
       proxy_, location, name.c_str(), col, row, count, transpose, &array);
 
   wl_array_release(&array);
@@ -183,7 +183,7 @@ GlBaseTechnique::Impl::Impl(System *system) : system_(system) {}
 GlBaseTechnique::Impl::~Impl()
 {
   if (proxy_) {
-    zgn_gl_base_technique_destroy(proxy_);
+    zwn_gl_base_technique_destroy(proxy_);
   }
 }
 

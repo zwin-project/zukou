@@ -12,7 +12,7 @@
 
 namespace zukou {
 
-const zgn_ray_listener System::Impl::ray_listener_ = {
+const zwn_ray_listener System::Impl::ray_listener_ = {
     System::Impl::HandleRayEnter,
     System::Impl::HandleRayLeave,
     System::Impl::HandleRayMotion,
@@ -25,8 +25,8 @@ const zgn_ray_listener System::Impl::ray_listener_ = {
 };
 
 void
-System::Impl::HandleRayEnter(void *data, struct zgn_ray * /*zgn_ray*/,
-    uint32_t serial, struct zgn_virtual_object *virtual_object_proxy,
+System::Impl::HandleRayEnter(void *data, struct zwn_ray * /*zwn_ray*/,
+    uint32_t serial, struct zwn_virtual_object *virtual_object_proxy,
     struct wl_array *origin_wl_array, struct wl_array *direction_wl_array)
 {
   auto self = static_cast<System::Impl *>(data);
@@ -42,8 +42,8 @@ System::Impl::HandleRayEnter(void *data, struct zgn_ray * /*zgn_ray*/,
 }
 
 void
-System::Impl::HandleRayLeave(void *data, struct zgn_ray * /*zgn_ray*/,
-    uint32_t serial, struct zgn_virtual_object *virtual_object_proxy)
+System::Impl::HandleRayLeave(void *data, struct zwn_ray * /*zwn_ray*/,
+    uint32_t serial, struct zwn_virtual_object *virtual_object_proxy)
 {
   auto self = static_cast<System::Impl *>(data);
   if (!self->delegate_) return;
@@ -55,7 +55,7 @@ System::Impl::HandleRayLeave(void *data, struct zgn_ray * /*zgn_ray*/,
 }
 
 void
-System::Impl::HandleRayMotion(void *data, struct zgn_ray * /*zgn_ray*/,
+System::Impl::HandleRayMotion(void *data, struct zwn_ray * /*zwn_ray*/,
     uint32_t time, struct wl_array *origin_wl_array,
     struct wl_array *direction_wl_array)
 {
@@ -70,16 +70,16 @@ System::Impl::HandleRayMotion(void *data, struct zgn_ray * /*zgn_ray*/,
 }
 
 void
-System::Impl::HandleRayButton(void *data, struct zgn_ray * /*zgn_ray*/,
+System::Impl::HandleRayButton(void *data, struct zwn_ray * /*zwn_ray*/,
     uint32_t serial, uint32_t time, uint32_t button, uint32_t state)
 {
   auto self = static_cast<System::Impl *>(data);
   if (!self->delegate_) return;
 
   bool pressed;
-  if (state == ZGN_RAY_BUTTON_STATE_PRESSED) {
+  if (state == ZWN_RAY_BUTTON_STATE_PRESSED) {
     pressed = true;
-  } else if (state == ZGN_RAY_BUTTON_STATE_RELEASED) {
+  } else if (state == ZWN_RAY_BUTTON_STATE_RELEASED) {
     pressed = false;
   } else {
     assert(false && "unknown ray button state");
@@ -88,13 +88,13 @@ System::Impl::HandleRayButton(void *data, struct zgn_ray * /*zgn_ray*/,
 }
 
 void
-System::Impl::HandleRayAxis(void *data, struct zgn_ray * /*zgn_ray*/,
+System::Impl::HandleRayAxis(void *data, struct zwn_ray * /*zwn_ray*/,
     uint32_t /*time*/, uint32_t axis, wl_fixed_t value)
 {
   auto self = static_cast<System::Impl *>(data);
   if (!self->delegate_) return;
 
-  if (axis == ZGN_RAY_AXIS_HORIZONTAL_SCROLL) {
+  if (axis == ZWN_RAY_AXIS_HORIZONTAL_SCROLL) {
     self->ray_axis_event_.horizontal += wl_fixed_to_double(value);
   } else {
     self->ray_axis_event_.vertical += wl_fixed_to_double(value);
@@ -103,25 +103,25 @@ System::Impl::HandleRayAxis(void *data, struct zgn_ray * /*zgn_ray*/,
 
 void
 System::Impl::HandleRayAxisSource(
-    void *data, struct zgn_ray * /*zgn_ray*/, uint32_t axis_source)
+    void *data, struct zwn_ray * /*zwn_ray*/, uint32_t axis_source)
 {
   auto self = static_cast<System::Impl *>(data);
   if (!self->delegate_) return;
 
   switch (axis_source) {
-    case ZGN_RAY_AXIS_SOURCE_WHEEL:
+    case ZWN_RAY_AXIS_SOURCE_WHEEL:
       self->ray_axis_event_.source = RayAxisEvent::kWheel;
       return;
 
-    case ZGN_RAY_AXIS_SOURCE_FINGER:
+    case ZWN_RAY_AXIS_SOURCE_FINGER:
       self->ray_axis_event_.source = RayAxisEvent::kFinger;
       return;
 
-    case ZGN_RAY_AXIS_SOURCE_CONTINUOUS:
+    case ZWN_RAY_AXIS_SOURCE_CONTINUOUS:
       self->ray_axis_event_.source = RayAxisEvent::kContinuous;
       return;
 
-    case ZGN_RAY_AXIS_SOURCE_WHEEL_TILT:
+    case ZWN_RAY_AXIS_SOURCE_WHEEL_TILT:
       self->ray_axis_event_.source = RayAxisEvent::kWheelTilt;
       return;
 
@@ -132,12 +132,12 @@ System::Impl::HandleRayAxisSource(
 
 void
 System::Impl::HandleRayAxisStop(
-    void *data, struct zgn_ray * /*zgn_ray*/, uint32_t /*time*/, uint32_t axis)
+    void *data, struct zwn_ray * /*zwn_ray*/, uint32_t /*time*/, uint32_t axis)
 {
   auto self = static_cast<System::Impl *>(data);
   if (!self->delegate_) return;
 
-  if (axis == ZGN_RAY_AXIS_HORIZONTAL_SCROLL) {
+  if (axis == ZWN_RAY_AXIS_HORIZONTAL_SCROLL) {
     self->ray_axis_event_.stop_horizontal = true;
   } else {
     self->ray_axis_event_.stop_vertical = true;
@@ -146,12 +146,12 @@ System::Impl::HandleRayAxisStop(
 
 void
 System::Impl::HandleRayAxisDiscrete(
-    void *data, struct zgn_ray * /*zgn_ray*/, uint32_t axis, int32_t discrete)
+    void *data, struct zwn_ray * /*zwn_ray*/, uint32_t axis, int32_t discrete)
 {
   auto self = static_cast<System::Impl *>(data);
   if (!self->delegate_) return;
 
-  if (axis == ZGN_RAY_AXIS_HORIZONTAL_SCROLL) {
+  if (axis == ZWN_RAY_AXIS_HORIZONTAL_SCROLL) {
     self->ray_axis_event_.discrete_horizontal += discrete;
   } else {
     self->ray_axis_event_.discrete_vertical += discrete;
@@ -159,7 +159,7 @@ System::Impl::HandleRayAxisDiscrete(
 }
 
 void
-System::Impl::HandleRayFrame(void *data, struct zgn_ray * /*zgn_ray*/)
+System::Impl::HandleRayFrame(void *data, struct zwn_ray * /*zwn_ray*/)
 {
   auto self = static_cast<System::Impl *>(data);
   if (!self->delegate_) return;
@@ -169,27 +169,27 @@ System::Impl::HandleRayFrame(void *data, struct zgn_ray * /*zgn_ray*/)
   self->ray_axis_event_ = RayAxisEvent();
 }
 
-const zgn_seat_listener System::Impl::seat_listener_ = {
+const zwn_seat_listener System::Impl::seat_listener_ = {
     System::Impl::HandleSeatCapabilities,
 };
 
 void
 System::Impl::HandleSeatCapabilities(
-    void *data, struct zgn_seat * /*zgn_seat*/, uint32_t capabilities)
+    void *data, struct zwn_seat * /*zwn_seat*/, uint32_t capabilities)
 {
   auto self = static_cast<System::Impl *>(data);
   bool has_ray =
-      (ZGN_SEAT_CAPABILITY_RAY_ORIGIN | ZGN_SEAT_CAPABILITY_RAY_DIRECTION) &
+      (ZWN_SEAT_CAPABILITY_RAY_ORIGIN | ZWN_SEAT_CAPABILITY_RAY_DIRECTION) &
       capabilities;
 
-  if (has_ray && !self->zgn_ray_) {
-    self->zgn_ray_ = zgn_seat_get_ray(self->zgn_seat_);
-    zgn_ray_add_listener(self->zgn_ray_, &System::Impl::ray_listener_, self);
+  if (has_ray && !self->zwn_ray_) {
+    self->zwn_ray_ = zwn_seat_get_ray(self->zwn_seat_);
+    zwn_ray_add_listener(self->zwn_ray_, &System::Impl::ray_listener_, self);
   }
 
-  if (!has_ray && self->zgn_ray_) {
-    zgn_ray_release(self->zgn_ray_);
-    self->zgn_ray_ = nullptr;
+  if (!has_ray && self->zwn_ray_) {
+    zwn_ray_release(self->zwn_ray_);
+    self->zwn_ray_ = nullptr;
   }
 }
 
@@ -203,27 +203,27 @@ System::Impl::HandleGlobal(void *data, struct wl_registry *registry,
     uint32_t name, const char *interface, uint32_t version)
 {
   auto self = static_cast<System::Impl *>(data);
-  if (std::strcmp(interface, "zgn_compositor") == 0) {
-    if (self->zgn_compositor_) zgn_compositor_destroy(self->zgn_compositor_);
-    self->zgn_compositor_ = static_cast<zgn_compositor *>(
-        wl_registry_bind(registry, name, &zgn_compositor_interface, version));
-  } else if (std::strcmp(interface, "zgn_seat") == 0) {
-    if (self->zgn_seat_) zgn_seat_destroy(self->zgn_seat_);
-    self->zgn_seat_ = static_cast<zgn_seat *>(
-        wl_registry_bind(registry, name, &zgn_seat_interface, version));
-    zgn_seat_add_listener(self->zgn_seat_, &System::Impl::seat_listener_, self);
-  } else if (std::strcmp(interface, "zgn_gles_v32") == 0) {
-    if (self->zgn_gles_v32_) zgn_gles_v32_destroy(self->zgn_gles_v32_);
-    self->zgn_gles_v32_ = static_cast<zgn_gles_v32 *>(
-        wl_registry_bind(registry, name, &zgn_gles_v32_interface, version));
-  } else if (std::strcmp(interface, "zgn_shell") == 0) {
-    if (self->zgn_shell_) zgn_shell_destroy(self->zgn_shell_);
-    self->zgn_shell_ = static_cast<zgn_shell *>(
-        wl_registry_bind(registry, name, &zgn_shell_interface, version));
-  } else if (std::strcmp(interface, "zgn_shm") == 0) {
-    if (self->zgn_shm_) zgn_shm_destroy(self->zgn_shm_);
-    self->zgn_shm_ = static_cast<zgn_shm *>(
-        wl_registry_bind(registry, name, &zgn_shm_interface, version));
+  if (std::strcmp(interface, "zwn_compositor") == 0) {
+    if (self->zwn_compositor_) zwn_compositor_destroy(self->zwn_compositor_);
+    self->zwn_compositor_ = static_cast<zwn_compositor *>(
+        wl_registry_bind(registry, name, &zwn_compositor_interface, version));
+  } else if (std::strcmp(interface, "zwn_seat") == 0) {
+    if (self->zwn_seat_) zwn_seat_destroy(self->zwn_seat_);
+    self->zwn_seat_ = static_cast<zwn_seat *>(
+        wl_registry_bind(registry, name, &zwn_seat_interface, version));
+    zwn_seat_add_listener(self->zwn_seat_, &System::Impl::seat_listener_, self);
+  } else if (std::strcmp(interface, "zwn_gles_v32") == 0) {
+    if (self->zwn_gles_v32_) zwn_gles_v32_destroy(self->zwn_gles_v32_);
+    self->zwn_gles_v32_ = static_cast<zwn_gles_v32 *>(
+        wl_registry_bind(registry, name, &zwn_gles_v32_interface, version));
+  } else if (std::strcmp(interface, "zwn_shell") == 0) {
+    if (self->zwn_shell_) zwn_shell_destroy(self->zwn_shell_);
+    self->zwn_shell_ = static_cast<zwn_shell *>(
+        wl_registry_bind(registry, name, &zwn_shell_interface, version));
+  } else if (std::strcmp(interface, "zwn_shm") == 0) {
+    if (self->zwn_shm_) zwn_shm_destroy(self->zwn_shm_);
+    self->zwn_shm_ = static_cast<zwn_shm *>(
+        wl_registry_bind(registry, name, &zwn_shm_interface, version));
   }
 }
 
@@ -250,10 +250,10 @@ System::Impl::TryConnect(const char *socket)
 
   wl_display_roundtrip(display_);
 
-  if (zgn_compositor_ == nullptr || zgn_seat_ == nullptr ||
-      zgn_gles_v32_ == nullptr || zgn_shell_ == nullptr ||
-      zgn_shm_ == nullptr) {
-    LOG_DEBUG("Server does not support zigen protocols");
+  if (zwn_compositor_ == nullptr || zwn_seat_ == nullptr ||
+      zwn_gles_v32_ == nullptr || zwn_shell_ == nullptr ||
+      zwn_shm_ == nullptr) {
+    LOG_DEBUG("Server does not support zwin protocols");
     goto err_globals;
   }
 
@@ -273,20 +273,20 @@ System::Impl::TryConnect(const char *socket)
   return true;
 
 err_globals:
-  if (zgn_shm_) zgn_shm_destroy(zgn_shm_);
-  zgn_shm_ = nullptr;
+  if (zwn_shm_) zwn_shm_destroy(zwn_shm_);
+  zwn_shm_ = nullptr;
 
-  if (zgn_shell_) zgn_shell_destroy(zgn_shell_);
-  zgn_shell_ = nullptr;
+  if (zwn_shell_) zwn_shell_destroy(zwn_shell_);
+  zwn_shell_ = nullptr;
 
-  if (zgn_gles_v32_) zgn_gles_v32_destroy(zgn_gles_v32_);
-  zgn_gles_v32_ = nullptr;
+  if (zwn_gles_v32_) zwn_gles_v32_destroy(zwn_gles_v32_);
+  zwn_gles_v32_ = nullptr;
 
-  if (zgn_seat_) zgn_seat_destroy(zgn_seat_);
-  zgn_seat_ = nullptr;
+  if (zwn_seat_) zwn_seat_destroy(zwn_seat_);
+  zwn_seat_ = nullptr;
 
-  if (zgn_compositor_) zgn_compositor_destroy(zgn_compositor_);
-  zgn_compositor_ = nullptr;
+  if (zwn_compositor_) zwn_compositor_destroy(zwn_compositor_);
+  zwn_compositor_ = nullptr;
 
   wl_registry_destroy(registry_);
   registry_ = nullptr;
@@ -378,11 +378,11 @@ System::Impl::Impl(ISystemDelegate *delegate) : delegate_(delegate) {}
 
 System::Impl::~Impl()
 {
-  if (zgn_shm_) zgn_shm_destroy(zgn_shm_);
-  if (zgn_shell_) zgn_shell_destroy(zgn_shell_);
-  if (zgn_gles_v32_) zgn_gles_v32_destroy(zgn_gles_v32_);
-  if (zgn_seat_) zgn_seat_destroy(zgn_seat_);
-  if (zgn_compositor_) zgn_compositor_destroy(zgn_compositor_);
+  if (zwn_shm_) zwn_shm_destroy(zwn_shm_);
+  if (zwn_shell_) zwn_shell_destroy(zwn_shell_);
+  if (zwn_gles_v32_) zwn_gles_v32_destroy(zwn_gles_v32_);
+  if (zwn_seat_) zwn_seat_destroy(zwn_seat_);
+  if (zwn_compositor_) zwn_compositor_destroy(zwn_compositor_);
   if (registry_) wl_registry_destroy(registry_);
   if (display_) wl_display_disconnect(display_);
 }

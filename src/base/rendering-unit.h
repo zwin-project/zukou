@@ -2,7 +2,7 @@
 
 #include <zukou.h>
 
-#include <zigen-gles-v32-client-protocol.h>
+#include <zwin-gles-v32-client-protocol.h>
 
 namespace zukou {
 
@@ -15,15 +15,15 @@ class RenderingUnit::Impl
 
   bool Init(VirtualObject* virtual_object_);
 
-  inline zgn_rendering_unit* proxy();
+  inline zwn_rendering_unit* proxy();
 
  private:
   System* system_;
 
-  zgn_rendering_unit* proxy_ = nullptr;
+  zwn_rendering_unit* proxy_ = nullptr;
 };
 
-inline zgn_rendering_unit*
+inline zwn_rendering_unit*
 RenderingUnit::Impl::proxy()
 {
   return proxy_;

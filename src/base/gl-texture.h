@@ -2,7 +2,7 @@
 
 #include <zukou.h>
 
-#include <zigen-gles-v32-client-protocol.h>
+#include <zwin-gles-v32-client-protocol.h>
 
 namespace zukou {
 
@@ -21,14 +21,14 @@ class GlTexture::Impl
 
   void GenerateMipmap(GLenum target);
 
-  inline zgn_gl_texture *proxy();
+  inline zwn_gl_texture *proxy();
 
  private:
   System *system_;
-  zgn_gl_texture *proxy_;
+  zwn_gl_texture *proxy_;
 };
 
-inline zgn_gl_texture *
+inline zwn_gl_texture *
 GlTexture::Impl::proxy()
 {
   return proxy_;

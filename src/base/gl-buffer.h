@@ -2,7 +2,7 @@
 
 #include <zukou.h>
 
-#include <zigen-gles-v32-client-protocol.h>
+#include <zwin-gles-v32-client-protocol.h>
 
 namespace zukou {
 
@@ -18,14 +18,14 @@ class GlBuffer::Impl
 
   void Data(GLenum target, Buffer* buffer, GLenum usage);
 
-  inline zgn_gl_buffer* proxy();
+  inline zwn_gl_buffer* proxy();
 
  private:
   System* system_;
-  zgn_gl_buffer* proxy_ = nullptr;
+  zwn_gl_buffer* proxy_ = nullptr;
 };
 
-inline zgn_gl_buffer*
+inline zwn_gl_buffer*
 GlBuffer::Impl::proxy()
 {
   return proxy_;

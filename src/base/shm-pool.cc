@@ -25,7 +25,7 @@ ShmPool::Impl::Init(int fd, off_t size)
   wl_array array;
   to_array(size, &array);
 
-  proxy_ = zgn_shm_create_pool(system_->pimpl->shm(), fd, &array);
+  proxy_ = zwn_shm_create_pool(system_->pimpl->shm(), fd, &array);
   wl_array_release(&array);
 
   if (proxy_ == nullptr) {
@@ -41,7 +41,7 @@ ShmPool::Impl::Impl(System *system) : system_(system) {}
 ShmPool::Impl::~Impl()
 {
   if (proxy_) {
-    zgn_shm_pool_destroy(proxy_);
+    zwn_shm_pool_destroy(proxy_);
   }
 }
 

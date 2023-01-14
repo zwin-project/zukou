@@ -2,7 +2,7 @@
 
 #include <zukou.h>
 
-#include <zigen-gles-v32-client-protocol.h>
+#include <zwin-gles-v32-client-protocol.h>
 
 namespace zukou {
 
@@ -37,7 +37,7 @@ class GlBaseTechnique::Impl
  private:
   System *system_;
 
-  zgn_gl_base_technique *proxy_ = nullptr;
+  zwn_gl_base_technique *proxy_ = nullptr;
 };
 
 }  // namespace zukou
