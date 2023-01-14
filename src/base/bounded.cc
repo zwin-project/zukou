@@ -94,7 +94,7 @@ Bounded::Impl::AckConfigure(uint32_t serial)
 void
 Bounded::Impl::SetTitle(const std::string &title)
 {
-  zgn_bounded_set_title(proxy_, title.c_str());
+  zwn_bounded_set_title(proxy_, title.c_str());
 }
 
 void
