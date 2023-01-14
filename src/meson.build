@@ -20,12 +20,12 @@ _source = [
   'base/expansive.cc',
   'base/virtual-object.cc',
 
-  protocols['zigen']['private-code'],
-  protocols['zigen']['client-header'],
-  protocols['zigen-shell']['private-code'],
-  protocols['zigen-shell']['client-header'],
-  protocols['zigen-gles-v32']['private-code'],
-  protocols['zigen-gles-v32']['client-header'],
+  protocols['zwin']['private-code'],
+  protocols['zwin']['client-header'],
+  protocols['zwin-shell']['private-code'],
+  protocols['zwin-shell']['client-header'],
+  protocols['zwin-gles-v32']['private-code'],
+  protocols['zwin-gles-v32']['client-header'],
 ]
 
 _zukou_deps = [

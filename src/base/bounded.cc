@@ -49,12 +49,12 @@ Bounded::Bounded(System *system, IBoundedDelegate *delegate)
 ZUKOU_EXPORT
 Bounded::~Bounded() = default;
 
-const zgn_bounded_listener Bounded::Impl::listener_ = {
+const zwn_bounded_listener Bounded::Impl::listener_ = {
     Bounded::Impl::HandleConfigure,
 };
 
 void
-Bounded::Impl::HandleConfigure(void *data, zgn_bounded * /*zgn_bounded*/,
+Bounded::Impl::HandleConfigure(void *data, zwn_bounded * /*zwn_bounded*/,
     struct wl_array *half_size, uint32_t serial)
 {
   auto self = static_cast<Bounded::Impl *>(data);
@@ -71,7 +71,7 @@ Bounded::Impl::Init(VirtualObject *virtual_object, const glm::vec3 &half_size)
   wl_array array;
   to_array(half_size, &array);
 
-  proxy_ = zgn_shell_get_bounded(
+  proxy_ = zwn_shell_get_bounded(
       system_->pimpl->shell(), virtual_object->pimpl->proxy(), &array);
   wl_array_release(&array);
 
@@ -80,7 +80,7 @@ Bounded::Impl::Init(VirtualObject *virtual_object, const glm::vec3 &half_size)
     return false;
   }
 
-  zgn_bounded_add_listener(proxy_, &Bounded::Impl::listener_, this);
+  zwn_bounded_add_listener(proxy_, &Bounded::Impl::listener_, this);
 
   return true;
 }
@@ -88,7 +88,7 @@ Bounded::Impl::Init(VirtualObject *virtual_object, const glm::vec3 &half_size)
 void
 Bounded::Impl::AckConfigure(uint32_t serial)
 {
-  zgn_bounded_ack_configure(proxy_, serial);
+  zwn_bounded_ack_configure(proxy_, serial);
 }
 
 void
@@ -100,13 +100,13 @@ Bounded::Impl::SetTitle(const std::string &title)
 void
 Bounded::Impl::SetRegion(Region *region)
 {
-  zgn_bounded_set_region(proxy_, region->pimpl->proxy());
+  zwn_bounded_set_region(proxy_, region->pimpl->proxy());
 }
 
 void
 Bounded::Impl::Move(uint32_t serial)
 {
-  zgn_bounded_move(proxy_, system_->pimpl->seat(), serial);
+  zwn_bounded_move(proxy_, system_->pimpl->seat(), serial);
 }
 
 Bounded::Impl::Impl(System *system, IBoundedDelegate *delegate)
@@ -116,7 +116,7 @@ Bounded::Impl::Impl(System *system, IBoundedDelegate *delegate)
 Bounded::Impl::~Impl()
 {
   if (proxy_) {
-    zgn_bounded_destroy(proxy_);
+    zwn_bounded_destroy(proxy_);
   }
 }
 

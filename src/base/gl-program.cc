@@ -34,9 +34,9 @@ GlProgram::~GlProgram() = default;
 bool
 GlProgram::Impl::Init()
 {
-  proxy_ = zgn_gles_v32_create_gl_program(system_->pimpl->gles_v32());
+  proxy_ = zwn_gles_v32_create_gl_program(system_->pimpl->gles_v32());
   if (proxy_ == nullptr) {
-    LOG_ERROR("Failed to create zgn_gl_program proxy");
+    LOG_ERROR("Failed to create zwn_gl_program proxy");
     return false;
   }
 
@@ -46,13 +46,13 @@ GlProgram::Impl::Init()
 void
 GlProgram::Impl::AttachShader(GlShader *shader)
 {
-  zgn_gl_program_attach_shader(proxy_, shader->pimpl->proxy());
+  zwn_gl_program_attach_shader(proxy_, shader->pimpl->proxy());
 }
 
 void
 GlProgram::Impl::Link()
 {
-  zgn_gl_program_link(proxy_);
+  zwn_gl_program_link(proxy_);
 }
 
 GlProgram::Impl::Impl(System *system) : system_(system) {}
@@ -60,7 +60,7 @@ GlProgram::Impl::Impl(System *system) : system_(system) {}
 GlProgram::Impl::~Impl()
 {
   if (proxy_) {
-    zgn_gl_program_destroy(proxy_);
+    zwn_gl_program_destroy(proxy_);
   }
 }
 

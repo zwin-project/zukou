@@ -34,9 +34,9 @@ GlSampler::~GlSampler() = default;
 bool
 GlSampler::Impl::Init()
 {
-  proxy_ = zgn_gles_v32_create_gl_sampler(system_->pimpl->gles_v32());
+  proxy_ = zwn_gles_v32_create_gl_sampler(system_->pimpl->gles_v32());
   if (proxy_ == nullptr) {
-    LOG_ERROR("Failed to create zgn_gl_shader proxy");
+    LOG_ERROR("Failed to create zwn_gl_shader proxy");
     return false;
   }
 
@@ -46,7 +46,7 @@ GlSampler::Impl::Init()
 void
 GlSampler::Impl::Parameteri(GLenum pname, GLint param)
 {
-  zgn_gl_sampler_parameteri(proxy_, pname, param);
+  zwn_gl_sampler_parameteri(proxy_, pname, param);
 }
 
 void
@@ -55,7 +55,7 @@ GlSampler::Impl::Parameterf(GLenum pname, GLfloat param)
   wl_array param_wl_array;
   to_array(param, &param_wl_array);
 
-  zgn_gl_sampler_parameterf(proxy_, pname, &param_wl_array);
+  zwn_gl_sampler_parameterf(proxy_, pname, &param_wl_array);
 
   wl_array_release(&param_wl_array);
 }
@@ -65,7 +65,7 @@ GlSampler::Impl::Impl(System *system) : system_(system) {}
 GlSampler::Impl::~Impl()
 {
   if (proxy_) {
-    zgn_gl_sampler_destroy(proxy_);
+    zwn_gl_sampler_destroy(proxy_);
   }
 }
 

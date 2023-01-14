@@ -24,15 +24,15 @@ jobs:
             libwayland-dev wayland-protocols libglm-dev libgles-dev \
             libjpeg-dev meson
 
-      - name: Clone zigen
+      - name: Clone zwin
         uses: actions/checkout@v2
         with:
-          repository: zigen-project/zigen
-          path: zigen
+          repository: zwin-project/zwin
+          path: zwin
           ref: draft
-      
-      - name: Build zigen
-        working-directory: ./zigen
+
+      - name: Build zwin
+        working-directory: ./zwin
         run: |
           meson build
           sudo ninja -C build install

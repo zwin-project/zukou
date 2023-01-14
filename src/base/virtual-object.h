@@ -3,7 +3,7 @@
 #include <zukou.h>
 
 #include <wayland-client.h>
-#include <zigen-client-protocol.h>
+#include <zwin-client-protocol.h>
 
 namespace zukou {
 
@@ -20,7 +20,7 @@ class VirtualObject::Impl
 
   void NextFrame();
 
-  inline zgn_virtual_object* proxy();
+  inline zwn_virtual_object* proxy();
 
  private:
   static const wl_callback_listener callback_listener_;
@@ -30,11 +30,11 @@ class VirtualObject::Impl
   System* system_;
   IVirtualObjectDelegate* delegate_;
 
-  zgn_virtual_object* proxy_ = nullptr;
+  zwn_virtual_object* proxy_ = nullptr;
   wl_callback* callback_ = nullptr;
 };
 
-inline zgn_virtual_object*
+inline zwn_virtual_object*
 VirtualObject::Impl::proxy()
 {
   return proxy_;

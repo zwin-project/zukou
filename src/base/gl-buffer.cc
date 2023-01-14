@@ -28,9 +28,9 @@ GlBuffer::~GlBuffer() = default;
 bool
 GlBuffer::Impl::Init()
 {
-  proxy_ = zgn_gles_v32_create_gl_buffer(system_->pimpl->gles_v32());
+  proxy_ = zwn_gles_v32_create_gl_buffer(system_->pimpl->gles_v32());
   if (proxy_ == nullptr) {
-    LOG_ERROR("Failed to creat zgn_gl_buffer proxy");
+    LOG_ERROR("Failed to creat zwn_gl_buffer proxy");
     return false;
   }
 
@@ -40,7 +40,7 @@ GlBuffer::Impl::Init()
 void
 GlBuffer::Impl::Data(GLenum target, Buffer *buffer, GLenum usage)
 {
-  zgn_gl_buffer_data(proxy_, target, buffer->pimpl->proxy(), usage);
+  zwn_gl_buffer_data(proxy_, target, buffer->pimpl->proxy(), usage);
 }
 
 GlBuffer::Impl::Impl(System *system) : system_(system) {}
@@ -48,7 +48,7 @@ GlBuffer::Impl::Impl(System *system) : system_(system) {}
 GlBuffer::Impl::~Impl()
 {
   if (proxy_) {
-    zgn_gl_buffer_destroy(proxy_);
+    zwn_gl_buffer_destroy(proxy_);
   }
 }
 

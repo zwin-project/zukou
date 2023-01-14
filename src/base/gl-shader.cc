@@ -42,11 +42,11 @@ GlShader::Impl::Init(GLenum type, const std::string &source)
   pool_.Init(fd_, source.size());
   buffer_.Init(&pool_, 0, source.size());
 
-  proxy_ = zgn_gles_v32_create_gl_shader(
+  proxy_ = zwn_gles_v32_create_gl_shader(
       system_->pimpl->gles_v32(), buffer_.pimpl->proxy(), type);
 
   if (proxy_ == nullptr) {
-    LOG_ERROR("Failed to creat zgn_gl_shader proxy");
+    LOG_ERROR("Failed to creat zwn_gl_shader proxy");
     close(fd_);
     fd_ = 0;
     return false;
@@ -61,7 +61,7 @@ GlShader::Impl::Impl(System *system) : system_(system), pool_(system), buffer_()
 GlShader::Impl::~Impl()
 {
   if (proxy_) {
-    zgn_gl_shader_destroy(proxy_);
+    zwn_gl_shader_destroy(proxy_);
   }
 
   if (fd_ != 0) close(fd_);

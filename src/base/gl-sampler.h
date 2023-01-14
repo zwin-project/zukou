@@ -2,7 +2,7 @@
 
 #include <zukou.h>
 
-#include <zigen-gles-v32-client-protocol.h>
+#include <zwin-gles-v32-client-protocol.h>
 
 namespace zukou {
 
@@ -20,14 +20,14 @@ class GlSampler::Impl
 
   void Parameterf(GLenum pname, GLfloat param);
 
-  inline zgn_gl_sampler *proxy();
+  inline zwn_gl_sampler *proxy();
 
  private:
   System *system_;
-  zgn_gl_sampler *proxy_ = nullptr;
+  zwn_gl_sampler *proxy_ = nullptr;
 };
 
-inline zgn_gl_sampler *
+inline zwn_gl_sampler *
 GlSampler::Impl::proxy()
 {
   return proxy_;

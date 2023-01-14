@@ -30,7 +30,7 @@ Expansive::Expansive(System* system, IExpansiveDelegate* delegate)
 ZUKOU_EXPORT
 Expansive::~Expansive() = default;
 
-const zgn_expansive_listener Expansive::Impl::listener_ = {
+const zwn_expansive_listener Expansive::Impl::listener_ = {
     Expansive::Impl::HandleEnter,
     Expansive::Impl::HandleLeave,
     Expansive::Impl::HandleShutdown,
@@ -38,7 +38,7 @@ const zgn_expansive_listener Expansive::Impl::listener_ = {
 
 void
 Expansive::Impl::HandleEnter(
-    void* data, struct zgn_expansive* /*zgn_expansive*/)
+    void* data, struct zwn_expansive* /*zwn_expansive*/)
 {
   auto self = static_cast<Expansive::Impl*>(data);
 
@@ -47,7 +47,7 @@ Expansive::Impl::HandleEnter(
 
 void
 Expansive::Impl::HandleLeave(
-    void* data, struct zgn_expansive* /*zgn_expansive*/)
+    void* data, struct zwn_expansive* /*zwn_expansive*/)
 {
   auto self = static_cast<Expansive::Impl*>(data);
 
@@ -56,7 +56,7 @@ Expansive::Impl::HandleLeave(
 
 void
 Expansive::Impl::HandleShutdown(
-    void* data, struct zgn_expansive* /*zgn_expansive*/)
+    void* data, struct zwn_expansive* /*zwn_expansive*/)
 {
   auto self = static_cast<Expansive::Impl*>(data);
 
@@ -66,7 +66,7 @@ Expansive::Impl::HandleShutdown(
 bool
 Expansive::Impl::Init(VirtualObject* virtual_object)
 {
-  proxy_ = zgn_shell_get_expansive(
+  proxy_ = zwn_shell_get_expansive(
       system_->pimpl->shell(), virtual_object->pimpl->proxy());
 
   if (proxy_ == nullptr) {
@@ -74,7 +74,7 @@ Expansive::Impl::Init(VirtualObject* virtual_object)
     return false;
   }
 
-  zgn_expansive_add_listener(proxy_, &Expansive::Impl::listener_, this);
+  zwn_expansive_add_listener(proxy_, &Expansive::Impl::listener_, this);
 
   return true;
 }
@@ -82,7 +82,7 @@ Expansive::Impl::Init(VirtualObject* virtual_object)
 void
 Expansive::Impl::SetRegion(Region* region)
 {
-  zgn_expansive_set_region(proxy_, region->pimpl->proxy());
+  zwn_expansive_set_region(proxy_, region->pimpl->proxy());
 }
 
 Expansive::Impl::Impl(System* system, IExpansiveDelegate* delegate)
@@ -92,7 +92,7 @@ Expansive::Impl::Impl(System* system, IExpansiveDelegate* delegate)
 Expansive::Impl::~Impl()
 {
   if (proxy_) {
-    zgn_expansive_destroy(proxy_);
+    zwn_expansive_destroy(proxy_);
   }
 }
 

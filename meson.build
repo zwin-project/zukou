@@ -35,12 +35,12 @@ foreach func : have_funcs
 endforeach
 
 wayland_req = '>= 1.18.0'
-zigen_protocols_req = '0.0.2'
+zwin_protocols_req = '0.0.2'
 
 glm_dep = dependency('glm')
 wayland_client_dep = dependency('wayland-client', version: wayland_req)
 wayland_scanner_dep = dependency('wayland-scanner')
-zigen_protocols_dep = dependency('zigen-protocols', version: zigen_protocols_req)
+zwin_protocols_dep = dependency('zwin-protocols', version: zwin_protocols_req)
 jpeg_dep = dependency('libjpeg')
 
 public_inc = include_directories('include')

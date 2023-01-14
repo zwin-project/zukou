@@ -43,9 +43,9 @@ GlVertexArray::~GlVertexArray() = default;
 bool
 GlVertexArray::Impl::Init()
 {
-  proxy_ = zgn_gles_v32_create_gl_vertex_array(system_->pimpl->gles_v32());
+  proxy_ = zwn_gles_v32_create_gl_vertex_array(system_->pimpl->gles_v32());
   if (proxy_ == nullptr) {
-    LOG_ERROR("Failed to create zgn_gl_vertex_array proxy");
+    LOG_ERROR("Failed to create zwn_gl_vertex_array proxy");
     return false;
   }
 
@@ -55,13 +55,13 @@ GlVertexArray::Impl::Init()
 void
 GlVertexArray::Impl::Enable(GLuint index)
 {
-  zgn_gl_vertex_array_enable_vertex_attrib_array(proxy_, index);
+  zwn_gl_vertex_array_enable_vertex_attrib_array(proxy_, index);
 }
 
 void
 GlVertexArray::Impl::Disable(GLuint index)
 {
-  zgn_gl_vertex_array_disable_vertex_attrib_array(proxy_, index);
+  zwn_gl_vertex_array_disable_vertex_attrib_array(proxy_, index);
 }
 
 void
@@ -72,7 +72,7 @@ GlVertexArray::Impl::VertexAttribPointer(GLuint index, GLint size, GLenum type,
 
   to_array(offset, &offset_wl_array);
 
-  zgn_gl_vertex_array_vertex_attrib_pointer(proxy_, index, size, type,
+  zwn_gl_vertex_array_vertex_attrib_pointer(proxy_, index, size, type,
       normalized, stride, &offset_wl_array, gl_buffer->pimpl->proxy());
 
   wl_array_release(&offset_wl_array);
@@ -83,7 +83,7 @@ GlVertexArray::Impl::Impl(System *system) : system_(system) {}
 GlVertexArray::Impl::~Impl()
 {
   if (proxy_) {
-    zgn_gl_vertex_array_destroy(proxy_);
+    zwn_gl_vertex_array_destroy(proxy_);
   }
 }
 

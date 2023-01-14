@@ -2,7 +2,7 @@
 
 #include <zukou.h>
 
-#include <zigen-gles-v32-client-protocol.h>
+#include <zwin-gles-v32-client-protocol.h>
 
 namespace zukou {
 
@@ -16,18 +16,18 @@ class GlShader::Impl
 
   bool Init(GLenum type, const std::string& source);
 
-  inline zgn_gl_shader* proxy();
+  inline zwn_gl_shader* proxy();
 
  private:
   System* system_;
-  zgn_gl_shader* proxy_ = nullptr;
+  zwn_gl_shader* proxy_ = nullptr;
 
   ShmPool pool_;
   Buffer buffer_;
   int fd_ = 0;
 };
 
-inline zgn_gl_shader*
+inline zwn_gl_shader*
 GlShader::Impl::proxy()
 {
   return proxy_;

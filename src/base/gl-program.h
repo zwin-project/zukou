@@ -2,7 +2,7 @@
 
 #include <zukou.h>
 
-#include <zigen-gles-v32-client-protocol.h>
+#include <zwin-gles-v32-client-protocol.h>
 
 namespace zukou {
 
@@ -20,14 +20,14 @@ class GlProgram::Impl
 
   void Link();
 
-  inline zgn_gl_program *proxy();
+  inline zwn_gl_program *proxy();
 
  private:
   System *system_;
-  zgn_gl_program *proxy_ = nullptr;
+  zwn_gl_program *proxy_ = nullptr;
 };
 
-inline zgn_gl_program *
+inline zwn_gl_program *
 GlProgram::Impl::proxy()
 {
   return proxy_;

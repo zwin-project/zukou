@@ -19,12 +19,12 @@ Buffer::Buffer(IBufferDelegate *delegate) : pimpl(new Impl(delegate)) {}
 ZUKOU_EXPORT
 Buffer::~Buffer() = default;
 
-const zgn_buffer_listener Buffer::Impl::listener_ = {
+const zwn_buffer_listener Buffer::Impl::listener_ = {
     Buffer::Impl::HandleRelease,
 };
 
 void
-Buffer::Impl::HandleRelease(void *data, zgn_buffer * /*zgn_buffer*/)
+Buffer::Impl::HandleRelease(void *data, zwn_buffer * /*zwn_buffer*/)
 {
   auto self = static_cast<Buffer::Impl *>(data);
 
@@ -39,18 +39,18 @@ Buffer::Impl::Init(ShmPool *pool, off_t offset, off_t size)
   to_array(offset, &offset_wl_array);
   to_array(size, &size_wl_array);
 
-  proxy_ = zgn_shm_pool_create_buffer(
+  proxy_ = zwn_shm_pool_create_buffer(
       pool->pimpl->proxy(), &offset_wl_array, &size_wl_array);
 
   wl_array_release(&offset_wl_array);
   wl_array_release(&size_wl_array);
 
   if (proxy_ == nullptr) {
-    LOG_ERROR("Failed to create zgn_buffer proxy");
+    LOG_ERROR("Failed to create zwn_buffer proxy");
     return false;
   }
 
-  zgn_buffer_add_listener(proxy_, &Buffer::Impl::listener_, this);
+  zwn_buffer_add_listener(proxy_, &Buffer::Impl::listener_, this);
 
   return true;
 }
@@ -60,7 +60,7 @@ Buffer::Impl::Impl(IBufferDelegate *delegate) : delegate_(delegate) {}
 Buffer::Impl::~Impl()
 {
   if (proxy_) {
-    zgn_buffer_destroy(proxy_);
+    zwn_buffer_destroy(proxy_);
   }
 }
 

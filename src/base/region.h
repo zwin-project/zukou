@@ -2,7 +2,7 @@
 
 #include <zukou.h>
 
-#include <zigen-client-protocol.h>
+#include <zwin-client-protocol.h>
 
 namespace zukou {
 
@@ -18,15 +18,15 @@ class Region::Impl
   void AddCuboid(const glm::vec3 &half_size, const glm::vec3 &center,
       const glm::quat &quaternion);
 
-  inline zgn_region *proxy();
+  inline zwn_region *proxy();
 
  private:
   System *system_;
 
-  zgn_region *proxy_ = nullptr;
+  zwn_region *proxy_ = nullptr;
 };
 
-inline zgn_region *
+inline zwn_region *
 Region::Impl::proxy()
 {
   return proxy_;

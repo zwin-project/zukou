@@ -22,7 +22,7 @@ RenderingUnit::~RenderingUnit() = default;
 bool
 RenderingUnit::Impl::Init(VirtualObject* virtual_object)
 {
-  proxy_ = zgn_gles_v32_create_rendering_unit(
+  proxy_ = zwn_gles_v32_create_rendering_unit(
       system_->pimpl->gles_v32(), virtual_object->pimpl->proxy());
   if (proxy_ == nullptr) {
     LOG_ERROR("Failed to create rendering unit proxy");
@@ -37,7 +37,7 @@ RenderingUnit::Impl::Impl(System* system) : system_(system) {}
 RenderingUnit::Impl::~Impl()
 {
   if (proxy_) {
-    zgn_rendering_unit_destroy(proxy_);
+    zwn_rendering_unit_destroy(proxy_);
   }
 }
 

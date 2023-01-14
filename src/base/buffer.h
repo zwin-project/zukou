@@ -2,7 +2,7 @@
 
 #include <zukou.h>
 
-#include <zigen-client-protocol.h>
+#include <zwin-client-protocol.h>
 
 namespace zukou {
 
@@ -16,18 +16,18 @@ class Buffer::Impl
 
   bool Init(ShmPool *pool, off_t offset, off_t size);
 
-  inline zgn_buffer *proxy();
+  inline zwn_buffer *proxy();
 
  private:
-  static const zgn_buffer_listener listener_;
-  static void HandleRelease(void *data, zgn_buffer *zgn_buffer);
+  static const zwn_buffer_listener listener_;
+  static void HandleRelease(void *data, zwn_buffer *zwn_buffer);
 
   IBufferDelegate *delegate_;  // nullable
 
-  zgn_buffer *proxy_ = nullptr;
+  zwn_buffer *proxy_ = nullptr;
 };
 
-inline zgn_buffer *
+inline zwn_buffer *
 Buffer::Impl::proxy()
 {
   return proxy_;
