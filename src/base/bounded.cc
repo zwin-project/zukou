@@ -24,6 +24,12 @@ Bounded::AckConfigure(uint32_t serial)
 }
 
 ZUKOU_EXPORT void
+Bounded::SetTitle(const std::string &title)
+{
+  pimpl->SetTitle(title);
+}
+
+ZUKOU_EXPORT void
 Bounded::SetRegion(Region *region)
 {
   pimpl->SetRegion(region);
@@ -83,6 +89,12 @@ void
 Bounded::Impl::AckConfigure(uint32_t serial)
 {
   zgn_bounded_ack_configure(proxy_, serial);
+}
+
+void
+Bounded::Impl::SetTitle(const std::string &title)
+{
+  zgn_bounded_set_title(proxy_, title.c_str());
 }
 
 void
