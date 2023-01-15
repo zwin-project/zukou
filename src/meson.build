@@ -50,6 +50,6 @@ zukou_dep = declare_dependency(
 pkgconfig.generate(
   _zukou_lib,
   name: 'zukou',
-  description: 'Client library for ZIGEN windowing system',
+  description: 'Client library for zwin',
   version: meson.project_version(),
 )
