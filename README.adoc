@@ -9,7 +9,6 @@ Client library for https://github.com/zwin-project[Zwin].
 . zwin protocols +
 Please see https://github.com/zwin-project/zwin[zwin-project/zwin]
 to build and install. +
-[yellow]#***__important__**#: Please use `draft` branch.
 
 . Other dependencies +
 For Ubuntu, other dependencies can be installed with apt-get. See .github/workflows/test.yaml and meson.build for the list of the required packages.
