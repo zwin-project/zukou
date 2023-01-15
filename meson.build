@@ -1,6 +1,6 @@
 project(
   'zukou', 'c', 'cpp',
-  version: '0.0.3',
+  version: '0.1.0',
   license: 'MIT',
   meson_version: '>= 0.58.0',
   default_options: ['warning_level=3', 'werror=true', 'optimization=2', 'c_std=gnu11', 'cpp_std=gnu++17'],
@@ -35,7 +35,7 @@ foreach func : have_funcs
 endforeach
 
 wayland_req = '>= 1.18.0'
-zwin_protocols_req = '0.0.2'
+zwin_protocols_req = '0.1.0'
 
 glm_dep = dependency('glm')
 wayland_client_dep = dependency('wayland-client', version: wayland_req)
