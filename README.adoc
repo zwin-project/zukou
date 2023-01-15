@@ -1,6 +1,6 @@
 = ZUKOU
 
-Client library for https://github.com/zwin-project[ZIGEN] windowing system
+Client library for https://github.com/zwin-project[Zwin].
 
 == Build & Install
 

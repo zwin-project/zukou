@@ -344,6 +344,7 @@ System::Init(const char *socket) const
       if (pimpl->TryConnect(candidate)) {
         connected = true;
         socket = candidate;
+        setenv("WAYLAND_DISPLAY", socket, true);
         break;
       }
       LOG_DEBUG("Failed to connect to %s", candidate);
