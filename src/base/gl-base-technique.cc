@@ -132,7 +132,8 @@ GlBaseTechnique::Impl::UniformVector(uint32_t location, const std::string &name,
 {
   wl_array array;
 
-  enum zwn_gl_base_technique_uniform_variable_type zwn_type;
+  enum zwn_gl_base_technique_uniform_variable_type zwn_type = 
+    ZWN_GL_BASE_TECHNIQUE_UNIFORM_VARIABLE_TYPE_FLOAT;
   switch (type) {
     case kFloat:
       zwn_type = ZWN_GL_BASE_TECHNIQUE_UNIFORM_VARIABLE_TYPE_FLOAT;
