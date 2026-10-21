@@ -47,7 +47,7 @@ jobs:
           ninja -C build
         working-directory: ./main
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         if: failure()
         with:
           name: zukou-test-log
